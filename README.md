@@ -23,7 +23,7 @@ Below are some key features, though not all are listed.
 
 | Icon                                                                                                           | Feature                                                   | Description                                                                                |
 |----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------|
-| ![Edit Text](assets/features/BatchAddDelete.png)                                                     | Edit Text                                       | Change case (e.g. Upper, Lower, Sentence) or Insert/Delete characters from strings.                                                        |
+| ![Edit Text](assets/features/EditText.png)                                                     | Edit Text                                       | Change case (e.g. Upper, Lower, Sentence) or Insert/Delete characters from strings.                                                        |
 | More Features to come...   |          |   |
 
 ## Installing & Uninstalling
