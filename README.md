@@ -2,7 +2,7 @@
 
 Sam's Tools is an Excel add-in designed to help those who spend lots of time in Excel to be more productive! It provides a suite of tools to quickly clean data, analyse information, format and present insights. While many paid products offer similar or more advanced functionalities, I'm sharing Sam's Tools so others can access these tools who may not have the budget for expensive software.
 
-![Sam's Tools Excel Addin](assets/Sam's_Tools_v1.5.0.png)
+![Sam's Tools Excel Addin](assets/Sam's_Tools_v2.0.png)
 
 To install on Windows (Mac not supported):
 - Download the `.xlam` in the [releases page](https://github.com/often-curious/SamsTools/tree/main/releases)
