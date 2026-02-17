@@ -2,7 +2,7 @@
 
 Sam's Tools is an Excel add-in designed to help those who spend lots of time in Excel to be more productive! It provides a suite of tools to quickly clean data, analyse information, format and present insights. While many paid products offer similar or more advanced functionalities, I'm sharing Sam's Tools so others can access these tools who may not have the budget for expensive software.
 
-![ProDeck Toolbar](assets/ProDeck_v1.6.0_Toolbar.png)
+![Sam's Tools Excel Addin](assets/Sam's_Tools_v1.5.0.png)
 
 To install on Windows (Mac not supported):
 - Download the `.xlam` in the [releases page](https://github.com/often-curious/SamsTools/tree/main/releases)
@@ -53,7 +53,7 @@ A step-by-step guide to installing **Sam's Tools** in Excel:
 #### For Windows
 
 1. **Prerequisite**: Ensure any previous versions of Sam's Tools are uninstalled to avoid conflicts.
-2. **Download ProDeck**: Download the latest [release of Sam's Tools](https://github.com/often-curious/SamsTools/tree/main/releases) (i.e., `.xlam` file).
+2. **Download Sam's Tools**: Download the latest [release of Sam's Tools](https://github.com/often-curious/SamsTools/tree/main/releases) (i.e., `.xlam` file).
 3. **Move the File**: Place the `.xlam` file in the correct add-ins folder: `C:\Users\[Your Username]\AppData\Roaming\Microsoft\AddIns`
 4. **Configure Excel**:
    - Open Excel and go to **File** > **Options**.
