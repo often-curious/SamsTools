@@ -41,7 +41,11 @@ Below are some key features, though not all are listed.
 |    |Lock/Unlock Sheets          |Add protection to sheets and create a custom password that you can use to lock and unlock sheets or entire workbooks. The main button is a toggle that quickly locks and unlocks the active sheet.   |
 |    |Mail          |Send only the selected sheets (rather than Excel's default of the entire workbook), or select to send sheets as values if you only need to share the output from a sheet.  |
 |    |Hide/Unhide          |Unhide all hidden rows & columns on the active sheet (including grouped cells), plus hide or unhide selected sheets in the workbook.   |
-| More Features to come...   |          |   |
+|    |Present Mode          |Easy way to hide the ribbon and make the sheet fullscreen when presenting or sharing your screen with others.   |
+|    |Split Worksheets          |Split the active workbook by turning each sheet into a seperate file (either .xlsx or .pdf).   |
+|    |Other Extras          |Some extras include: agenda template, calendar template, motivational quotes, text to speech function, magic number game and more!   |
+|    |Right-click menu          |Have also added some other quick formatting functions to the right-click menu to make it easy for format commonly used types.   |
+|    |F1 Key Disabled          |By default the F1 key is also disabled so no more chances of accidentially pressing it and no need to remove the key from my keyboard (which I had previously done on a few occasions).   |
 
 ## Installing & Uninstalling
 
@@ -53,7 +57,7 @@ A step-by-step guide to installing **Sam's Tools** in Excel:
 
 1. **Prerequisite**: Ensure any previous versions of Sam's Tools are uninstalled to avoid conflicts.
 2. **Download Sam's Tools**: Download the latest [release of Sam's Tools](https://github.com/often-curious/SamsTools/tree/main/releases) (i.e., `.xlam` file).
-3. **Move the File**: Place the `.xlam` file in the correct add-ins folder - paste the following in your file explorer: '%appdata%\Microsoft\addins' or `C:\Users\[Your Username]\AppData\Roaming\Microsoft\AddIns`
+3. **Move the File**: Place the `.xlam` file in the correct add-ins folder - paste the following in your file explorer: `%appdata%\Microsoft\addins` or `C:\Users\[Your Username]\AppData\Roaming\Microsoft\AddIns`
 4. **Configure Excel**:
    - Open Excel and go to **File** > **Options**.
    - Select **Add-ins**.
