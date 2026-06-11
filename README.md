@@ -10,7 +10,7 @@ To install on Windows (Mac not supported):
 
 ## Why I Created This
 
-As a finance nerd who spends hours in Excel, I found I was constantly repeating some actions over and over. I looked into VBA as a way to automate these actions and over time started building a toolbar so I could access them quickly. I also saw other examples across the internet of cool ideas for macros that help make Excel life easy, so I've encorporated these in over the years too.
+As a finance nerd who spends hours in Excel, I found I was constantly repeating some actions over and over. I looked into VBA as a way to automate these actions and over time started building a toolbar so I could access them quickly. I also saw other examples across the internet of cool ideas for macros that help make Excel life easy, and I've incorporated these ideas over the years too.
 
 ## Requirements
 
@@ -30,11 +30,11 @@ Below are some key features, though not all are listed.
 |    |Value Formatting          |Quickly format values as absolute, dollars, bps and +/- % - the thousands (k) and millions (m) buttons display the numbers in the respective formats without changing the number.    |
 |    |Colour Formatting          |Pre-define your key brand colour and set them as 1, 2, or 3 (this will let you apply the brand formatting to any cell, table or chart selected and needs to be configured in the 'Formatting Extras' menu) you can also make the selected cell/object bighter or darker, format cell outlines white, and pick colours from selected cells.  |
 |    |Formatting Extras          |The menu includes functions such as setting the brand colours, converting merged cells to centre across, ...   |
-|    |Trace Precendents          |A more insightful approach to auditing formulas to see which cells preceed (or are inputs to) the outcome.   |
+|    |Trace Precendents          |A more insightful approach to auditing formulas to see which cells precede (or are inputs to) the outcome.   |
 |    |Trace Dependents          |A more insightful approach to auditing formulas to see which cells depend on (or use the selected cell as inputs) for their outcome.   |
 |    |Find Anything          |Dynamic search function which will display all results as you type and let you select which ones to go to.   |
 |    |Modelling Extras          |   |
-|    |Formual Extras          |   |
+|    |Formula Extras          |   |
 |    |Sheet Extras          |   |
 |    |Issues          |Create an issue log to capture and review any problems in a model, plus quick link to wrap any formulas with an iferror that returns either blank or zero.   |
 |    |Charts          |   |
