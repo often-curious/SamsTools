@@ -24,6 +24,8 @@ Below are some key features, though not all are listed.
 | Icon                                                                                                           | Feature                                                   | Description                                                                                |
 |----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------|
 | ![Edit Text](assets/features/EditText.png)                                                     | Edit Text                                       | Change case (e.g. Upper, Lower, Sentence) or Insert/Delete characters from strings.                                                        |
+|    |Copy Data          |Copy both structured and unstructured data, plus create live snapshots which will continuously update as the reference cells are updated.   |
+| More Features to come...   |          |   |
 | More Features to come...   |          |   |
 
 ## Installing & Uninstalling
