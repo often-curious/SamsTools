@@ -38,6 +38,9 @@ Below are some key features, though not all are listed.
 |    |Sheet Extras          |   |
 |    |Issues          |Create an issue log to capture and review any problems in a model, plus quick link to wrap any formulas with an iferror that returns either blank or zero.   |
 |    |Charts          |   |
+|    |Lock/Unlock Sheets          |Add protection to sheets and create a custom password that you can use to lock and unlock sheets or entire workbooks. The main button is a toggle that quickly locks and unlocks the active sheet.   |
+|    |Mail          |Send only the selected sheets (rather than Excel's default of the entire workbook), or select to send sheets as values if you only need to share the output from a sheet.  |
+|    |Hide/Unhide          |Unhide all hidden rows & columns on the active sheet (including grouped cells), plus hide or unhide selected sheets in the workbook.   |
 | More Features to come...   |          |   |
 
 ## Installing & Uninstalling
@@ -50,14 +53,14 @@ A step-by-step guide to installing **Sam's Tools** in Excel:
 
 1. **Prerequisite**: Ensure any previous versions of Sam's Tools are uninstalled to avoid conflicts.
 2. **Download Sam's Tools**: Download the latest [release of Sam's Tools](https://github.com/often-curious/SamsTools/tree/main/releases) (i.e., `.xlam` file).
-3. **Move the File**: Place the `.xlam` file in the correct add-ins folder: `C:\Users\[Your Username]\AppData\Roaming\Microsoft\AddIns`
+3. **Move the File**: Place the `.xlam` file in the correct add-ins folder - paste the following in your file explorer: '%appdata%\Microsoft\addins' or `C:\Users\[Your Username]\AppData\Roaming\Microsoft\AddIns`
 4. **Configure Excel**:
    - Open Excel and go to **File** > **Options**.
    - Select **Add-ins**.
    - Under the **Manage** section, select **Excel Add-ins** and click **Go**.
 5. **Add Sam's Tools**:
    - Click **Add New** in the add-ins window.
-   - Navigate to the folder where you saved the Sam's Tools `.ppam` file, select it, and click **OK**.
+   - Navigate to the folder where you saved the Sam's Tools `.xlam` file, select it, and click **OK**.
 6. **Complete Installation**:
    - The Sam's Tools tab should now appear in the Excel ribbon, confirming successful installation.
 
