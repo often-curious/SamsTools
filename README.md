@@ -101,7 +101,7 @@ Please submit an issue through GitHub and include:
 - Steps to reproduce the issue
 - Screenshots (if applicable)
 
-While this is a hobby project and responses may not be immediate, I review all submissions.
+While this is a hobby project and responses may not be immediate, I will try review all submissions.
 
 ## How to Develop Your Own
 
