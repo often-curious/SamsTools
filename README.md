@@ -83,10 +83,25 @@ A step-by-step guide to uninstalling **Sam's Tools**:
 5. **Complete Uninstallation**:
    - Close the add-ins window. The Sam's Tools tab should disappear from Excel, confirming that the add-in has been successfully uninstalled.
 
+## Disclaimer
+
+This add-in is provided free of charge and is developed in my spare time.
+
+While I use these tools regularly in professional environments, no warranty is provided and users should test functionality before relying on it for critical workbooks.
+
+Always keep backups of important files.
 
 ## How You Can Contribute
 
-You are welcome to submit issues and bug reports via this GitHub repository. I will review them whenever I can.
+Bug reports, feature requests, and suggestions are welcome.
+
+Please submit an issue through GitHub and include:
+- Excel version
+- Operating system
+- Steps to reproduce the issue
+- Screenshots (if applicable)
+
+While this is a hobby project and responses may not be immediate, I review all submissions.
 
 ## How to Develop Your Own
 
@@ -121,3 +136,6 @@ To edit the macros and custom functionality within the `.xlam` file, follow thes
 
 ## Other Amazing Open Source Tools
 - [Office Fluent UI Identifiers](https://github.com/OfficeDev/office-fluent-ui-command-identifiers): A great resource for finding identifiers to make the add-in look seamless.
+
+
+
