@@ -23,8 +23,8 @@ Below are some key features, though not all are listed.
 
 | Icon                                                                                                           | Feature                                                   | Description                                                                                |
 |----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| ![Copy Data](assets/features/CopyData.png)   |Copy Data          |Copy both structured and unstructured data, plus create live snapshots which will continuously update as the reference cells are updated.   |
 | ![Edit Text](assets/features/EditText.png)                                                     | Edit Text                                       | Change case (e.g. Upper, Lower, Sentence) or Insert/Delete characters from strings.                                                        |
-|    |Copy Data          |Copy both structured and unstructured data, plus create live snapshots which will continuously update as the reference cells are updated.   |
 |    |Edit Numbers          |Quickly multiply or divide numbers in the selected ranges, or convert absolute numbers (e.g. 50) into percentages (e.g. 50%), plus change the sign (e.g. +50 becomes -50).   |
 |    |Model Formatting          |Preset model formats to quickly format cells as inputs, calculations, links, errors etc...   |
 |    |Value Formatting          |Quickly format values as absolute, dollars, bps and +/- % - the thousands (k) and millions (m) buttons display the numbers in the respective formats without changing the number.    |
