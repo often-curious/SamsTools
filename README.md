@@ -137,5 +137,9 @@ To edit the macros and custom functionality within the `.xlam` file, follow thes
 ## Other Amazing Open Source Tools
 - [Office Fluent UI Identifiers](https://github.com/OfficeDev/office-fluent-ui-command-identifiers): A great resource for finding identifiers to make the add-in look seamless.
 
+## Support More of This
+If you love these tools and want to see more, I would love it if you'd consider buying me a coffee
+<script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="sam.robinson" data-color="#FFDD00" data-emoji="☕"  data-font="Poppins" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
+
 
 
