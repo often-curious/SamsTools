@@ -1,8 +1,8 @@
-# Sam's Tools Excel Toolbar Addin
+# Sam's Tools Excel Toolbar Add-in
 
 Sam's Tools is an Excel add-in designed to help those who spend lots of time in Excel to be more productive! It provides a suite of tools to quickly clean data, analyse information, format and present insights. While many paid products offer similar or more advanced functionalities, I'm sharing Sam's Tools so others can access these tools who may not have the budget for expensive software.
 
-![Sam's Tools Excel Addin](assets/Sam's_Tools_v202606.png)
+![Sam's Tools Excel Add-in](assets/Sam's_Tools_v202606.png)
 
 To install on Windows (Mac not supported):
 - Download the `.xlam` in the [releases page](https://github.com/often-curious/SamsTools/tree/main/releases)
@@ -21,7 +21,7 @@ As a finance nerd who spends hours in Excel, I found I was constantly repeating 
 
 Below are some key features, though not all are listed.
 
-| Icon                                                                                                           | Feature                                                   | Description                                                                                |
+| Icon                                                                                                              | Feature                                                   | Description                                                                                |
 |----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------|
 | ![Copy Data](assets/features/CopyData.jpg)   |Copy Data          |Copy both structured and unstructured data, plus create live snapshots which will continuously update as the reference cells are updated.   |
 | ![Edit Text](assets/features/EditText.jpg)                                                     | Edit Text                                       | Change case (e.g. Upper, Lower, Sentence) or Insert/Delete characters from strings.                                                        |
@@ -43,7 +43,7 @@ Below are some key features, though not all are listed.
 |![Hide / Unhide](assets/features/HideUnhide.jpg)    |Hide/Unhide          |Unhide all hidden rows & columns on the active sheet (including grouped cells), plus hide or unhide selected sheets in the workbook.   |
 |![Present Mode](assets/features/Present.jpg)    |Present Mode          |Easy way to hide the ribbon and make the sheet fullscreen when presenting or sharing your screen with others.   |
 |![Split Worksheets](assets/features/SplitWorksheets.jpg)    |Split Worksheets          |Split the active workbook by turning each sheet into a seperate file (either .xlsx or .pdf).   |
-|![OtherExtras](assets/features/OtherExtras.jpg)    |Other Extras          |Some extras include: agenda template, calendar template, motivational quotes, text to speech function, magic number game and more!   |
+|![OtherExtras](assets/features/Extras.jpg)    |Other Extras          |Some extras include: agenda template, calendar template, motivational quotes, text to speech function, magic number game and more!   |
 |    |Right-click menu          |Have also added some other quick formatting functions to the right-click menu to make it easy for format commonly used types.   |
 |    |F1 Key Disabled          |By default the F1 key is also disabled so no more chances of accidentially pressing it and no need to remove the key from my keyboard (which I had previously done on a few occasions).   |
 
