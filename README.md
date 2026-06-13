@@ -138,7 +138,7 @@ To edit the macros and custom functionality within the `.xlam` file, follow thes
 - [Office Fluent UI Identifiers](https://github.com/OfficeDev/office-fluent-ui-command-identifiers): A great resource for finding identifiers to make the add-in look seamless.
 
 ## Support More of This
-If you love these tools and want to support a few of the late nights I've had building them, I would love it if you'd consider buying me a coffee...
+If you love these tools and want to support a few of the late nights I've had building them, feel free to contribute to buying me a coffee...
 
 <a href="https://www.buymeacoffee.com/sam.robinson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
