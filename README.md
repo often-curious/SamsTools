@@ -23,27 +23,27 @@ Below are some key features, though not all are listed.
 
 | Icon                                                                                                           | Feature                                                   | Description                                                                                |
 |----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|--------------------------------------------------------------------------------------------|
-| ![Copy Data](assets/features/CopyData.jpeg)   |Copy Data          |Copy both structured and unstructured data, plus create live snapshots which will continuously update as the reference cells are updated.   |
-| ![Edit Text](assets/features/EditText.png)                                                     | Edit Text                                       | Change case (e.g. Upper, Lower, Sentence) or Insert/Delete characters from strings.                                                        |
-|    |Edit Numbers          |Quickly multiply or divide numbers in the selected ranges, or convert absolute numbers (e.g. 50) into percentages (e.g. 50%), plus change the sign (e.g. +50 becomes -50).   |
-|    |Model Formatting          |Preset model formats to quickly format cells as inputs, calculations, links, errors etc...   |
-|    |Value Formatting          |Quickly format values as absolute, dollars, bps and +/- % - the thousands (k) and millions (m) buttons display the numbers in the respective formats without changing the number.    |
-|    |Colour Formatting          |Pre-define your key brand colour and set them as 1, 2, or 3 (this will let you apply the brand formatting to any cell, table or chart selected and needs to be configured in the 'Formatting Extras' menu) you can also make the selected cell/object bighter or darker, format cell outlines white, and pick colours from selected cells.  |
-|    |Formatting Extras          |The menu includes functions such as setting the brand colours, converting merged cells to centre across, ...   |
-|    |Trace Precendents          |A more insightful approach to auditing formulas to see which cells precede (or are inputs to) the outcome.   |
-|    |Trace Dependents          |A more insightful approach to auditing formulas to see which cells depend on (or use the selected cell as inputs) for their outcome.   |
-|    |Find Anything          |Dynamic search function which will display all results as you type and let you select which ones to go to.   |
-|    |Modelling Extras          |   |
-|    |Formula Extras          |   |
-|    |Sheet Extras          |   |
-|    |Issues          |Create an issue log to capture and review any problems in a model, plus quick link to wrap any formulas with an iferror that returns either blank or zero.   |
-|    |Charts          |   |
-|    |Lock/Unlock Sheets          |Add protection to sheets and create a custom password that you can use to lock and unlock sheets or entire workbooks. The main button is a toggle that quickly locks and unlocks the active sheet.   |
-|    |Mail          |Send only the selected sheets (rather than Excel's default of the entire workbook), or select to send sheets as values if you only need to share the output from a sheet.  |
-|    |Hide/Unhide          |Unhide all hidden rows & columns on the active sheet (including grouped cells), plus hide or unhide selected sheets in the workbook.   |
-|    |Present Mode          |Easy way to hide the ribbon and make the sheet fullscreen when presenting or sharing your screen with others.   |
-|    |Split Worksheets          |Split the active workbook by turning each sheet into a seperate file (either .xlsx or .pdf).   |
-|    |Other Extras          |Some extras include: agenda template, calendar template, motivational quotes, text to speech function, magic number game and more!   |
+| ![Copy Data](assets/features/CopyData.jpg)   |Copy Data          |Copy both structured and unstructured data, plus create live snapshots which will continuously update as the reference cells are updated.   |
+| ![Edit Text](assets/features/EditText.jpg)                                                     | Edit Text                                       | Change case (e.g. Upper, Lower, Sentence) or Insert/Delete characters from strings.                                                        |
+|![Edit Numbers](assets/features/EditNumbers.jpg)    |Edit Numbers          |Quickly multiply or divide numbers in the selected ranges, or convert absolute numbers (e.g. 50) into percentages (e.g. 50%), plus change the sign (e.g. +50 becomes -50).   |
+|![Model Formatting](assets/features/ModelFormatting.jpg)    |Model Formatting          |Preset model formats to quickly format cells as inputs, calculations, links, errors etc...   |
+|![Value Formatting](assets/features/ValueFormatting.jpg)    |Value Formatting          |Quickly format values as absolute, dollars, bps and +/- % - the thousands (k) and millions (m) buttons display the numbers in the respective formats without changing the number.    |
+|![Colour Formatting](assets/features/ColourFormatting.jpg)    |Colour Formatting          |Pre-define your key brand colour and set them as 1, 2, or 3 (this will let you apply the brand formatting to any cell, table or chart selected and needs to be configured in the 'Formatting Extras' menu) you can also make the selected cell/object bighter or darker, format cell outlines white, and pick colours from selected cells.  |
+|![Formatting Extras](assets/features/FormattingExtras.jpg)    |Formatting Extras          |The menu includes functions such as setting the brand colours, converting merged cells to centre across, ...   |
+|![Trace Precedents](assets/features/TracePrecedents.jpg)    |Trace Precedents          |A more insightful approach to auditing formulas to see which cells precede (or are inputs to) the outcome.   |
+|![Trace Dependents](assets/features/TraceDependents.jpg)    |Trace Dependents          |A more insightful approach to auditing formulas to see which cells depend on (or use the selected cell as inputs) for their outcome.   |
+|![Find Anything](assets/features/FindAnything.jpg)    |Find Anything          |Dynamic search function which will display all results as you type and let you select which ones to go to.   |
+|![Modelling Extras](assets/features/ModellingExtras.jpg)    |Modelling Extras          |   |
+|![Formula Extras](assets/features/FormulaExtras.jpg)    |Formula Extras          |   |
+|![Sheet Extras](assets/features/SheetExtras.jpg)    |Sheet Extras          |   |
+|![Issues](assets/features/Issues.jpg)    |Issues          |Create an issue log to capture and review any problems in a model, plus quick link to wrap any formulas with an iferror that returns either blank or zero.   |
+|![Charts](assets/features/Charts.jpg)    |Charts          |   |
+|![Lock / Unlock](assets/features/LockUnlock.jpg)    |Lock/Unlock Sheets          |Add protection to sheets and create a custom password that you can use to lock and unlock sheets or entire workbooks. The main button is a toggle that quickly locks and unlocks the active sheet.   |
+|![Mail](assets/features/Mail.jpg)    |Mail          |Send only the selected sheets (rather than Excel's default of the entire workbook), or select to send sheets as values if you only need to share the output from a sheet.  |
+|![Hide / Unhide](assets/features/HideUnhide.jpg)    |Hide/Unhide          |Unhide all hidden rows & columns on the active sheet (including grouped cells), plus hide or unhide selected sheets in the workbook.   |
+|![Present Mode](assets/features/Present.jpg)    |Present Mode          |Easy way to hide the ribbon and make the sheet fullscreen when presenting or sharing your screen with others.   |
+|![Split Worksheets](assets/features/SplitWorksheets.jpg)    |Split Worksheets          |Split the active workbook by turning each sheet into a seperate file (either .xlsx or .pdf).   |
+|![OtherExtras](assets/features/OtherExtras.jpg)    |Other Extras          |Some extras include: agenda template, calendar template, motivational quotes, text to speech function, magic number game and more!   |
 |    |Right-click menu          |Have also added some other quick formatting functions to the right-click menu to make it easy for format commonly used types.   |
 |    |F1 Key Disabled          |By default the F1 key is also disabled so no more chances of accidentially pressing it and no need to remove the key from my keyboard (which I had previously done on a few occasions).   |
 
