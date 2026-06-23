@@ -33,9 +33,9 @@ Below are some key features, though not all are listed.
 |![Trace Precedents](assets/features/TracePrecedents.jpg)    |Trace Precedents          |A more insightful approach to auditing formulas to see which cells precede (or are inputs to) the outcome.   |
 |![Trace Dependents](assets/features/TraceDependents.jpg)    |Trace Dependents          |A more insightful approach to auditing formulas to see which cells depend on (or use the selected cell as inputs) for their outcome.   |
 |![Find Anything](assets/features/FindAnything.jpg)    |Find Anything          |Dynamic search function which will display all results as you type and let you select which ones to go to.   |
-|![Modelling Extras](assets/features/ModellingExtras.jpg)    |Modelling Extras          |   |
-|![Formula Extras](assets/features/FormulaExtras.jpg)    |Formula Extras          |   |
-|![Sheet Extras](assets/features/SheetExtras.jpg)    |Sheet Extras          |   |
+|![Modelling Extras](assets/features/ModellingExtras.jpg)    |Modelling Extras          |Create a Table of Contents, highlight plugs in formulas (hardcoded values), view a list of all external links in a model and export a full model map.   |
+|![Formula Extras](assets/features/FormulaExtras.jpg)    |Formula Extras          |Tidy up formulas and make them formatted better so they are easy to read, remove broken names and load some custom Lambdas to the name manager.  |
+|![Sheet Extras](assets/features/SheetExtras.jpg)    |Sheet Extras          |Basic excel sheet formatting setup for each new sheet, plus quick insert the sheet name, and sequential numbers/letters to create an index, or insert/delete x number of rows which can be helpful for tidying up messy data.   |
 |![Issues](assets/features/Issues.jpg)    |Issues          |Create an issue log to capture and review any problems in a model, plus quick link to wrap any formulas with an iferror that returns either blank or zero.   |
 |![Charts](assets/features/Charts.jpg)    |Charts          |   |
 |![Lock / Unlock](assets/features/LockUnlock.jpg)    |Lock/Unlock Sheets          |Add protection to sheets and create a custom password that you can use to lock and unlock sheets or entire workbooks. The main button is a toggle that quickly locks and unlocks the active sheet.   |
