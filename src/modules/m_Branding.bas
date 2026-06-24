@@ -125,42 +125,170 @@ Private Sub ToggleBrandStyle(index As Integer)
         On Error GoTo 0
     
         If Not selSeries Is Nothing Then
-            With selSeries.Format
-                Dim hasFill As Boolean
-                Dim hasOutline As Boolean
-                Dim fillRGB As Long
-                Dim outlineRGB As Long
     
-                hasFill = .Fill.Visible And .Fill.ForeColor.RGB = fillColor
-                hasOutline = .line.Visible
-    
-                If hasFill And Not hasOutline Then
-                    ' Change to: no fill, thick outline in brand colour
-                    .Fill.Visible = msoFalse
-                    .line.Visible = msoTrue
-                    .line.ForeColor.RGB = fillColor
-                    .line.Weight = 2.25
-                    .line.DashStyle = msoLineSolid
-    
-                ElseIf Not hasFill And hasOutline And .line.ForeColor.RGB = fillColor Then
-                    ' Change to: no fill, black outline
-                    .line.ForeColor.RGB = RGB(0, 0, 0)
-                    .line.Weight = 1
-    
-                Else
-                    ' Default back to: solid fill, no outline
-                    .Fill.Visible = msoTrue
-                    .Fill.Solid
-                    .Fill.ForeColor.RGB = fillColor
-                    .Fill.Transparency = 0
-                    .line.Visible = msoFalse
-                End If
-            End With
-    
-            Application.ScreenUpdating = True
-            Exit Sub
-        End If
+            ' --- Handle Line Charts Separately ---
+            If IsLineChartSeries(selSeries) Then
+                Dim lineStateName As String
+                Dim lineState As Long
+                Dim hadMarkers As Boolean
+            
+                lineStateName = SafeStateKey("Brand" & index & "_LineState_" & ActiveChart.Name & "_" & selSeries.Name)
+                lineState = GetStoredState(lineStateName)
+            
+                hadMarkers = SeriesHasMarkers(selSeries)
+            
+                With selSeries.Format.line
+                    Select Case lineState
+            
+                        Case 0
+                            ' State 1: Solid Brand Line
+                            .Visible = msoTrue
+                            .ForeColor.RGB = fillColor
+                            .Weight = 1.5
+                            .DashStyle = msoLineSolid
+            
+                            ApplyMarkerStyle selSeries, hadMarkers, fillColor, textColor, xlMarkerStyleCircle
+            
+                            SaveStoredState lineStateName, 1
+            
+                        Case 1
+                            ' State 2: Thick Brand Line
+                            .Visible = msoTrue
+                            .ForeColor.RGB = fillColor
+                            .Weight = 2.25
+                            .DashStyle = msoLineSolid
+            
+                            ApplyMarkerStyle selSeries, hadMarkers, fillColor, textColor, xlMarkerStyleCircle
+            
+                            SaveStoredState lineStateName, 2
+            
+                        Case 2
+                            ' State 3: Thin Brand Line
+                            .Visible = msoTrue
+                            .ForeColor.RGB = fillColor
+                            .Weight = 1
+                            .DashStyle = msoLineSolid
+            
+                            ApplyMarkerStyle selSeries, hadMarkers, fillColor, textColor, xlMarkerStyleSquare
+            
+                            SaveStoredState lineStateName, 3
+            
+                        Case 3
+                            ' State 4: Thin Dashed Brand Line
+                            .Visible = msoTrue
+                            .ForeColor.RGB = fillColor
+                            .Weight = 1
+                            .DashStyle = msoLineDash
+            
+                            ApplyMarkerStyle selSeries, hadMarkers, fillColor, textColor, xlMarkerStyleDiamond
+            
+                            SaveStoredState lineStateName, 4
+            
+                        Case Else
+                            ' State 5: 80% Lighter Brand Line
+                            .Visible = msoTrue
+                            .ForeColor.RGB = AdjustBrightness(fillColor, 0.8)
+                            .Weight = 1.5
+                            .DashStyle = msoLineSolid
+            
+                            ApplyMarkerStyle selSeries, hadMarkers, fillColor, textColor, xlMarkerStyleTriangle
+            
+                            SaveStoredState lineStateName, 0
+            
+                    End Select
+                End With
+            
+                Application.ScreenUpdating = True
+                Exit Sub
+            End If
+        With selSeries.Format
+
+            If .Fill.Visible And .Fill.ForeColor.RGB = fillColor And Not .line.Visible Then
+
+                ' State 2: Thick Outline Only - Brand Colour
+                .Fill.Visible = msoTrue
+                .Fill.Solid
+                .Fill.ForeColor.RGB = RGB(255, 255, 255)
+                .line.Visible = msoTrue
+                .line.ForeColor.RGB = fillColor
+                .line.Weight = 2.25
+                .line.DashStyle = msoLineSolid
+
+            ElseIf .Fill.ForeColor.RGB = RGB(255, 255, 255) And .line.Visible _
+                And .line.ForeColor.RGB = fillColor _
+                And .line.Weight > 1.25 Then
+
+                ' State 3: Thin Outline Only - Brand Colour
+                .Fill.Visible = msoTrue
+                .Fill.Solid
+                .Fill.ForeColor.RGB = RGB(255, 255, 255)
+                .line.Visible = msoTrue
+                .line.ForeColor.RGB = fillColor
+                .line.Weight = 1
+                .line.DashStyle = msoLineSolid
+
+            ElseIf .Fill.ForeColor.RGB = RGB(255, 255, 255) And .line.Visible _
+                And .line.ForeColor.RGB = fillColor _
+                And .line.Weight <= 1.25 Then
+
+                ' State 4: Thin Diagonal Pattern + Thin Outline - Brand Colour
+                .Fill.Visible = msoTrue
+                .Fill.Patterned msoPatternLightUpwardDiagonal
+                .Fill.ForeColor.RGB = fillColor
+                .Fill.BackColor.RGB = RGB(255, 255, 255)
+
+                .line.Visible = msoTrue
+                .line.ForeColor.RGB = fillColor
+                .line.Weight = 1
+                .line.DashStyle = msoLineSolid
+
+            ElseIf .Fill.Visible _
+                And .line.Visible _
+                And .line.ForeColor.RGB = fillColor _
+                And .Fill.ForeColor.RGB = fillColor Then
+
+                ' State 5: Brand Fill 80% Lighter + Thin Outline - Brand Colour
+                .Fill.Visible = msoTrue
+                .Fill.Solid
+                .Fill.ForeColor.RGB = AdjustBrightness(fillColor, 0.8)
+                .Fill.Transparency = 0
+
+                .line.Visible = msoTrue
+                .line.ForeColor.RGB = fillColor
+                .line.Weight = 1
+                .line.DashStyle = msoLineSolid
+
+            ElseIf .Fill.Visible _
+                And .line.Visible _
+                And .line.ForeColor.RGB = fillColor _
+                And .Fill.ForeColor.RGB = AdjustBrightness(fillColor, 0.8) Then
+
+                ' Back to State 1: Solid Fill
+                .Fill.Visible = msoTrue
+                .Fill.Solid
+                .Fill.ForeColor.RGB = fillColor
+                .Fill.Transparency = 0
+
+                .line.Visible = msoFalse
+
+            Else
+
+                ' State 1: Solid Fill
+                .Fill.Visible = msoTrue
+                .Fill.Solid
+                .Fill.ForeColor.RGB = fillColor
+                .Fill.Transparency = 0
+
+                .line.Visible = msoFalse
+
+            End If
+
+        End With
+
+        Application.ScreenUpdating = True
+        Exit Sub
     End If
+End If
 
 
 
@@ -205,7 +333,7 @@ Private Sub ToggleBrandStyle(index As Integer)
                     ' Clear row fill & borders
                     If Not .DataBodyRange Is Nothing Then
                         With .DataBodyRange
-                            .Interior.ColorIndex = xlNone
+                            .Interior.colorIndex = xlNone
                             Dim b As Variant
                             For Each b In Array(xlEdgeTop, xlEdgeBottom, xlEdgeLeft, xlEdgeRight, xlInsideHorizontal)
                                 .Borders(b).LineStyle = xlNone
@@ -233,7 +361,7 @@ Private Sub ToggleBrandStyle(index As Integer)
         
                     Case Else
                         ' Reset header
-                        .HeaderRowRange.Interior.ColorIndex = xlNone
+                        .HeaderRowRange.Interior.colorIndex = xlNone
                         .HeaderRowRange.Font.color = vbBlack
                         
                         .TableStyle = "TableStyleLight1" ' or "" if you want no built-in style
@@ -243,7 +371,7 @@ Private Sub ToggleBrandStyle(index As Integer)
                         
         
                         If Not .DataBodyRange Is Nothing Then
-                            .DataBodyRange.Interior.ColorIndex = xlNone
+                            .DataBodyRange.Interior.colorIndex = xlNone
                             For Each b In Array(xlEdgeTop, xlEdgeBottom, xlEdgeLeft, xlEdgeRight, xlInsideHorizontal)
                                 .DataBodyRange.Borders(b).LineStyle = xlNone
                             Next b
@@ -260,50 +388,164 @@ Private Sub ToggleBrandStyle(index As Integer)
 
         
         ' --- Regular Cell Toggle Logic ---
-        Dim c As Range
-        Dim allHaveBrandFillAndText As Boolean
-        allHaveBrandFillAndText = True
-        
-        ' Step 1: Do all selected cells have brand fill + text?
-        For Each c In rng.Cells
-            If Not (c.Interior.color = fillColor And c.Font.color = textColor) Then
-                allHaveBrandFillAndText = False
-                Exit For
-            End If
-        Next c
-        
-        If Not allHaveBrandFillAndText Then
-            ' Apply brand fill + brand text to all selected cells
+            Dim c As Range
+            Dim lightFillColor As Long
+            
+            lightFillColor = AdjustBrightness(fillColor, 0.8)
+            
             For Each c In rng.Cells
-                c.Interior.color = fillColor
-                c.Font.color = textColor
-            Next c
-        
-        Else
-            ' All cells already have brand fill + text, so toggle to next states
-            For Each c In rng.Cells
-                Dim hasNoFill As Boolean
-                hasNoFill = (c.Interior.ColorIndex = xlColorIndexNone)
-        
-                If c.Interior.color = fillColor And c.Font.color = textColor Then
-                    ' ? no fill + brand text
-                    c.Interior.ColorIndex = xlColorIndexNone
+            
+                If c.Interior.pattern = xlSolid _
+                    And c.Interior.color = fillColor _
+                    And c.Font.color = textColor Then
+            
+                    ' State 2: No Fill + Brand Text
+                    c.Interior.colorIndex = xlColorIndexNone
                     c.Font.color = fillColor
-        
-                ElseIf hasNoFill And c.Font.color = fillColor Then
-                    ' ? no fill + black text
+                    ClearCellBorders c
+            
+                ElseIf c.Interior.colorIndex = xlColorIndexNone _
+                    And c.Font.color = fillColor Then
+            
+                    ' State 3: Pattern Fill + Thin Outline - Brand Colour
+                    c.Interior.pattern = xlLightUp
+                    c.Interior.PatternColor = fillColor
+                    c.Interior.color = RGB(255, 255, 255)
                     c.Font.color = vbBlack
-        
-                Else
-                    ' ? fallback: brand fill + brand text
+                    ApplyCellBorder c, fillColor, xlThin
+            
+                ElseIf c.Interior.pattern = xlLightUp _
+                    And c.Interior.PatternColor = fillColor Then
+            
+                    ' State 4: Brand Fill 80% Lighter + Black Text
+                    c.Interior.pattern = xlSolid
+                    c.Interior.color = lightFillColor
+                    c.Font.color = vbBlack
+                    ClearCellBorders c
+            
+                ElseIf c.Interior.pattern = xlSolid _
+                    And c.Interior.color = lightFillColor _
+                    And c.Font.color = vbBlack Then
+            
+                    ' State 5: No Fill + Black Text
+                    c.Interior.colorIndex = xlColorIndexNone
+                    c.Font.color = vbBlack
+                    ClearCellBorders c
+            
+                ElseIf c.Interior.colorIndex = xlColorIndexNone _
+                    And c.Font.color = vbBlack Then
+            
+                    ' Back to State 1: Brand Fill + Brand Text
+                    c.Interior.pattern = xlSolid
                     c.Interior.color = fillColor
                     c.Font.color = textColor
+                    ClearCellBorders c
+            
+                Else
+            
+                    ' Default to State 1
+                    c.Interior.pattern = xlSolid
+                    c.Interior.color = fillColor
+                    c.Font.color = textColor
+                    ClearCellBorders c
+            
                 End If
+            
             Next c
-        End If
-    End If
+            
+            End If
 
     Application.ScreenUpdating = True
+End Sub
+
+Private Function SafeStateKey(rawKey As String) As String
+    Dim i As Long
+    Dim ch As String
+    Dim result As String
+
+    For i = 1 To Len(rawKey)
+        ch = Mid(rawKey, i, 1)
+
+        If ch Like "[A-Za-z0-9_]" Then
+            result = result & ch
+        Else
+            result = result & "_"
+        End If
+    Next i
+
+    If Not Left(result, 1) Like "[A-Za-z_]" Then
+        result = "S_" & result
+    End If
+
+    SafeStateKey = Left(result, 200)
+End Function
+
+Private Sub ApplyCellBorder(TargetCell As Range, borderColor As Long, borderWeight As XlBorderWeight)
+    Dim b As Variant
+
+    For Each b In Array(xlEdgeTop, xlEdgeBottom, xlEdgeLeft, xlEdgeRight)
+        With TargetCell.Borders(b)
+            .LineStyle = xlContinuous
+            .Weight = borderWeight
+            .color = borderColor
+        End With
+    Next b
+End Sub
+
+Private Sub ClearCellBorders(TargetCell As Range)
+    Dim b As Variant
+
+    For Each b In Array(xlEdgeTop, xlEdgeBottom, xlEdgeLeft, xlEdgeRight)
+        TargetCell.Borders(b).LineStyle = xlNone
+    Next b
+End Sub
+
+Private Function IsLineChartSeries(s As Series) As Boolean
+    Select Case s.chartType
+        Case xlLine, _
+             xlLineMarkers, _
+             xlLineStacked, _
+             xlLineMarkersStacked, _
+             xlLineStacked100, _
+             xlLineMarkersStacked100, _
+             xlXYScatterLines, _
+             xlXYScatterLinesNoMarkers, _
+             xlXYScatterSmooth, _
+             xlXYScatterSmoothNoMarkers
+
+            IsLineChartSeries = True
+
+        Case Else
+            IsLineChartSeries = False
+    End Select
+End Function
+
+Private Function SeriesHasMarkers(s As Series) As Boolean
+    On Error Resume Next
+
+    SeriesHasMarkers = Not (s.markerStyle = xlMarkerStyleNone Or s.markerStyle = xlMarkerStyleAutomatic)
+
+    On Error GoTo 0
+End Function
+
+Private Sub ApplyMarkerStyle( _
+    s As Series, _
+    hasMarkers As Boolean, _
+    markerFillColor As Long, _
+    markerLineColor As Long, _
+    markerStyle As XlMarkerStyle)
+
+    On Error Resume Next
+
+    If hasMarkers Then
+        s.markerStyle = markerStyle
+        s.MarkerForegroundColor = markerFillColor
+        s.MarkerBackgroundColor = markerLineColor
+    Else
+        s.markerStyle = xlMarkerStyleNone
+    End If
+
+    On Error GoTo 0
 End Sub
 
 Private Function GetStoredState(key As String) As Long
@@ -374,23 +616,71 @@ Sub ApplyTemporaryFill(control As IRibbonControl)
 End Sub
 
 Sub WhiteDividers(control As IRibbonControl)
+
     Dim rng As Range
+    Dim currentColor As Long
+    Dim brand1 As Long
+    Dim brand2 As Long
+    Dim brand3 As Long
+
+    If TypeName(Selection) <> "Range" Then Exit Sub
     Set rng = Selection
 
-    If rng Is Nothing Then Exit Sub
+    brand1 = GetBrandFillColor(1)
+    brand2 = GetBrandFillColor(2)
+    brand3 = GetBrandFillColor(3)
 
-    With rng.Borders(xlInsideHorizontal)
-        .LineStyle = xlContinuous
-        .color = RGB(255, 255, 255)
-        .Weight = xlThin
-    End With
+    If rng.Borders(xlEdgeTop).LineStyle = xlNone Then
+        ApplyAllBorders rng, RGB(255, 255, 255)
 
-    With rng.Borders(xlInsideVertical)
-        .LineStyle = xlContinuous
-        .color = RGB(255, 255, 255)
-        .Weight = xlThin
-    End With
+    Else
+        currentColor = rng.Borders(xlEdgeTop).color
+
+        If currentColor = RGB(255, 255, 255) Then
+            ApplyAllBorders rng, brand1
+
+        ElseIf currentColor = brand1 Then
+            ApplyAllBorders rng, brand2
+
+        ElseIf currentColor = brand2 Then
+            ApplyAllBorders rng, brand3
+
+        ElseIf currentColor = brand3 Then
+            ClearAllBorders rng
+
+        Else
+            ApplyAllBorders rng, RGB(255, 255, 255)
+        End If
+    End If
+
 End Sub
+
+Private Function GetBrandFillColor(index As Integer) As Long
+    On Error Resume Next
+    GetBrandFillColor = Evaluate(ThisWorkbook.Names("BrandFillColor" & index).RefersTo)
+    On Error GoTo 0
+End Function
+
+Private Sub ApplyAllBorders(targetRange As Range, borderColor As Long)
+    Dim b As Variant
+
+    For Each b In Array(xlEdgeTop, xlEdgeBottom, xlEdgeLeft, xlEdgeRight, xlInsideHorizontal, xlInsideVertical)
+        With targetRange.Borders(b)
+            .LineStyle = xlContinuous
+            .color = borderColor
+            .Weight = xlThin
+        End With
+    Next b
+End Sub
+
+Private Sub ClearAllBorders(targetRange As Range)
+    Dim b As Variant
+
+    For Each b In Array(xlEdgeTop, xlEdgeBottom, xlEdgeLeft, xlEdgeRight, xlInsideHorizontal, xlInsideVertical)
+        targetRange.Borders(b).LineStyle = xlNone
+    Next b
+End Sub
+
 
 Sub LightenColor(control As IRibbonControl)
     Dim hsl As hsl
@@ -403,7 +693,7 @@ Sub LightenColor(control As IRibbonControl)
     If TypeName(Selection) = "Range" Then
         Dim cell As Range
         For Each cell In Selection
-            If cell.Interior.ColorIndex = xlNone Then
+            If cell.Interior.colorIndex = xlNone Then
                 colorVal = cell.Font.color
                 RGBComponents colorVal, r, g, b
                 hsl = RGBToHSL(r, g, b)
@@ -477,7 +767,7 @@ Sub LightenColor(control As IRibbonControl)
         ElseIf TypeName(Selection) = "ShapeRange" Then
             Set shpRange = Selection
             For idx = 1 To shpRange.count
-                Call ProcessShapeLighten(shpRange.Item(idx))
+                Call ProcessShapeLighten(shpRange.item(idx))
             Next idx
         End If
 
@@ -543,7 +833,7 @@ Sub DarkenColor(control As IRibbonControl)
     If TypeName(Selection) = "Range" Then
         Dim cell As Range
         For Each cell In Selection
-            If cell.Interior.ColorIndex = xlNone Then
+            If cell.Interior.colorIndex = xlNone Then
                 colorVal = cell.Font.color
                 RGBComponents colorVal, r, g, b
                 hsl = RGBToHSL(r, g, b)

@@ -45,7 +45,7 @@ If ActiveSheet.Name = ContentName Then
 End If
 
 'Create new TOC sheet
-Worksheets.Add before:=Worksheets(1)
+Worksheets.Add Before:=Worksheets(1)
 Set Content_sht = ActiveSheet
 Content_sht.Name = ContentName
 Content_sht.Range("B2") = "Table of Contents"
@@ -282,7 +282,7 @@ Sub ListAllLinks(control As IRibbonControl)
     Next Wks
     
     If cnt > 0 Then
-        Worksheets.Add before:=Worksheets(1)
+        Worksheets.Add Before:=Worksheets(1)
         Range("A1").Resize(, 2).value = Array("Location", "Reference")
         Range("A2").Resize(UBound(aLinks, 2), UBound(aLinks, 1)).value = Application.Transpose(aLinks)
         Columns("A:B").AutoFit
@@ -330,17 +330,17 @@ Sub SaveWorksheetsAsPDF(control As IRibbonControl)
     Dim ws As Worksheet
     Dim folderName As String
     Dim FldrPicker As FileDialog
-    Dim Wb As Workbook
+    Dim wb As Workbook
     Dim selectedSheets As Sheets
     
     Application.ScreenUpdating = False
     Application.EnableEvents = False
     On Error GoTo ErrorHandler
 
-    Set Wb = ActiveWorkbook
+    Set wb = ActiveWorkbook
     
     ' Check if workbook is saved
-    If Not Wb.Saved Then
+    If Not wb.Saved Then
         MsgBox "Please save the workbook before running this macro.", vbExclamation
         Exit Sub
     End If
@@ -398,7 +398,7 @@ Sub Issue_log(control As IRibbonControl)
 
     Dim wsTest As Worksheet
     Dim issueWS As Worksheet
-    Dim targetCell As Range
+    Dim TargetCell As Range
     Dim lastRow As Long
     Const strSheetName As String = "Issues"
 
@@ -409,14 +409,14 @@ Sub Issue_log(control As IRibbonControl)
 
     ' Get the top-left cell of the selection or merged area
     If Selection.MergeCells Then
-        Set targetCell = Selection.MergeArea.Cells(1, 1)
+        Set TargetCell = Selection.MergeArea.Cells(1, 1)
     Else
-        Set targetCell = Selection.Cells(1, 1)
+        Set TargetCell = Selection.Cells(1, 1)
     End If
 
     ' Create sheet if it doesn't exist
     If wsTest Is Nothing Then
-        Set issueWS = Worksheets.Add(before:=Worksheets(1))
+        Set issueWS = Worksheets.Add(Before:=Worksheets(1))
         issueWS.Name = strSheetName
         With issueWS
             .Range("A1:H1").value = Array("Sheet Name", "Range Ref", "Date/Time", "Colour", "Formula", "Value", "Description", "Action")
@@ -443,32 +443,32 @@ Sub Issue_log(control As IRibbonControl)
 
     With issueWS
         ' Sheet name
-        .Cells(lastRow, "A").value = targetCell.Worksheet.Name
+        .Cells(lastRow, "A").value = TargetCell.Worksheet.Name
 
         ' Hyperlinked reference to top-left cell
         Dim addr As String, linkFormula As String
         Dim labelAddr As String
-        addr = targetCell.Address(False, False) ' Link target
+        addr = TargetCell.Address(False, False) ' Link target
         labelAddr = Selection.Address(False, False) ' Display text (full range)
-        linkFormula = "=HYPERLINK(""#'" & targetCell.Worksheet.Name & "'!" & addr & """,""" & labelAddr & """)"
+        linkFormula = "=HYPERLINK(""#'" & TargetCell.Worksheet.Name & "'!" & addr & """,""" & labelAddr & """)"
         .Cells(lastRow, "B").formula = linkFormula
 
         ' Timestamp
         .Cells(lastRow, "C").value = Now
 
         ' Cell formatting
-        targetCell.Copy
+        TargetCell.Copy
         .Cells(lastRow, "D").PasteSpecial Paste:=xlPasteFormats
 
         ' Formula (as text)
-        If targetCell.HasFormula Then
-            .Cells(lastRow, "E").formula = "'" & targetCell.formula
+        If TargetCell.HasFormula Then
+            .Cells(lastRow, "E").formula = "'" & TargetCell.formula
         Else
             .Cells(lastRow, "E").value = ""
         End If
 
         ' Value
-        .Cells(lastRow, "F").value = targetCell.value
+        .Cells(lastRow, "F").value = TargetCell.value
     End With
 
     Application.CutCopyMode = False
@@ -548,7 +548,7 @@ Sub CreateCalendarv2(control As IRibbonControl)
             With rStart
                 .value = strMonth
                 .HorizontalAlignment = xlCenter
-                .Interior.ColorIndex = 15
+                .Interior.colorIndex = 15
                 .Font.Bold = True
                     With .Range("A1:G1")
                         .Merge
@@ -585,15 +585,15 @@ Sub CreateCalendarv2(control As IRibbonControl)
     'add con formatting
      With Range("A1:U35")
            .FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, Formula1:="=TODAY()"
-           .FormatConditions(1).Font.ColorIndex = 2
-           .FormatConditions(1).Interior.ColorIndex = 1
+           .FormatConditions(1).Font.colorIndex = 2
+           .FormatConditions(1).Interior.colorIndex = 1
     End With
         
     Range("A1").EntireRow.Insert
         
     With Range("A1:U1")
             .HorizontalAlignment = xlCenter
-            .Interior.ColorIndex = 46
+            .Interior.colorIndex = 46
             .Font.Bold = True
             .numberFormat = "yyyy"
                 With .Range("A1:U1")
@@ -689,7 +689,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -705,7 +705,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -721,7 +721,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -737,7 +737,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -753,7 +753,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -769,7 +769,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -785,7 +785,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -801,7 +801,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -817,7 +817,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -833,7 +833,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -849,7 +849,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -865,7 +865,7 @@ Sub CreateCalendar(control As IRibbonControl)
                                 With .Range("A1:G1")
                                     .HorizontalAlignment = xlCenterAcrossSelection
                                     .BorderAround LineStyle:=xlContinuous
-                                    .Interior.ColorIndex = 15
+                                    .Interior.colorIndex = 15
                                     .Font.Bold = True
                                 End With
                         End With
@@ -889,8 +889,8 @@ Sub CreateCalendar(control As IRibbonControl)
     'add con formatting
      With Range("A1:U35")
            .FormatConditions.Add Type:=xlCellValue, Operator:=xlEqual, Formula1:="=TODAY()"
-           .FormatConditions(1).Font.ColorIndex = 2
-           .FormatConditions(1).Interior.ColorIndex = 1
+           .FormatConditions(1).Font.colorIndex = 2
+           .FormatConditions(1).Interior.colorIndex = 1
     End With
         
     'Range("A1").EntireRow.Insert
@@ -898,7 +898,7 @@ Sub CreateCalendar(control As IRibbonControl)
     With Range("A1:U1")
             .ClearContents
             .HorizontalAlignment = xlCenter
-            .Interior.ColorIndex = 46
+            .Interior.colorIndex = 46
             .Font.Bold = True
             .numberFormat = "0000"
                 With .Range("A1:U1")
@@ -930,24 +930,24 @@ End Sub
 Sub CreateAgenda(control As IRibbonControl)
     Dim ws As Worksheet
     Dim agendaName As String: agendaName = "Agenda"
-    Dim Wb As Workbook
+    Dim wb As Workbook
     Dim row As Long
     Dim inputRange As Range
     Dim cfRange As Range
     
-    Set Wb = ActiveWorkbook
+    Set wb = ActiveWorkbook
     
     Application.ScreenUpdating = False
     
     ' Delete existing Agenda sheet if it exists
     Application.DisplayAlerts = False
     On Error Resume Next
-    Wb.Sheets(agendaName).Delete
+    wb.Sheets(agendaName).Delete
     On Error GoTo 0
     Application.DisplayAlerts = True
     
     ' Add new Agenda sheet at the end
-    Set ws = Wb.Sheets.Add(After:=Wb.Sheets(Wb.Sheets.count))
+    Set ws = wb.Sheets.Add(After:=wb.Sheets(wb.Sheets.count))
     ws.Name = agendaName
     
     ' Make column A narrow as margin
@@ -1070,12 +1070,12 @@ Sub CreateAgenda(control As IRibbonControl)
     With ws.Range("B6:E21").Borders
         .LineStyle = xlContinuous
         .Weight = xlThin
-        .ColorIndex = 15
+        .colorIndex = 15
     End With
     With ws.Range("G6:N21").Borders
         .LineStyle = xlContinuous
         .Weight = xlThin
-        .ColorIndex = 15
+        .colorIndex = 15
     End With
     
     ' Conditional formatting: highlight entire output row if Break = "Yes"
@@ -1083,7 +1083,7 @@ Sub CreateAgenda(control As IRibbonControl)
     With cfRange.FormatConditions
         .Delete
         .Add Type:=xlExpression, Formula1:="=$N7=""Yes"""
-        With .Item(1)
+        With .item(1)
             .Interior.color = RGB(217, 217, 217) ' light grey
         End With
     End With
@@ -1093,7 +1093,7 @@ Sub CreateAgenda(control As IRibbonControl)
     
     Application.ScreenUpdating = True
     
-    MsgBox "Agenda sheet created in " & Wb.Name & ". Fill the left table and enter gap times and breaks in the right table.", vbInformation
+    MsgBox "Agenda sheet created in " & wb.Name & ". Fill the left table and enter gap times and breaks in the right table.", vbInformation
 End Sub
 
 ' Helper sub to format user input ranges
@@ -1168,7 +1168,7 @@ Sub Split_Selected_Sheets_VALUES(control As IRibbonControl)
     Dim Destwb As Workbook
     Dim TempFilePath As String
     Dim TempFileName As String
-    Dim Sh As Worksheet
+    Dim sh As Worksheet
     Dim TheActiveWindow As Window
     Dim TempWindow As Window
     Dim TempName As Variant
@@ -1231,16 +1231,16 @@ Sub Split_Selected_Sheets_VALUES(control As IRibbonControl)
 
     ' Optional: Convert cells to values
     If keepFormulas = vbNo Then
-        For Each Sh In Destwb.Worksheets
-            Sh.Select
-            With Sh.UsedRange
+        For Each sh In Destwb.Worksheets
+            sh.Select
+            With sh.UsedRange
                 .Cells.Copy
                 .Cells.PasteSpecial xlPasteValues
                 .Cells(1).Select
             End With
             Application.CutCopyMode = False
             Destwb.Worksheets(1).Select
-        Next Sh
+        Next sh
     End If
 
     ' Save the workbook

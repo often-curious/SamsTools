@@ -1,12 +1,16 @@
 Attribute VB_Name = "m_Text"
 Sub Off()
+    Unload frmTextTools
+    ShowLoading "Processing text edits..."
     Application.Calculation = xlCalculationManual
     Application.ScreenUpdating = False
     Application.EnableEvents = False
     Application.DisplayAlerts = False
     Debug.Print Now
+    
 End Sub
 Sub Onn()
+    HideLoading
     Application.Calculation = xlCalculationAutomatic
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -38,6 +42,7 @@ Sub ConvertTextToUpper()
                 c.value = StrConv(c.value, vbUpperCase)
             End If
         Next c
+        Call Onn
         Exit Sub
     End If
 
@@ -50,10 +55,12 @@ Sub ConvertTextToUpper()
                 End If
             End If
         Next sel
+        Call Onn
         Exit Sub
     End If
 
     Call Onn
+    
 
     ' Unsupported selection
     MsgBox "The selected object is not supported. Please select cells or text-based shapes.", vbExclamation, "Invalid Selection"
@@ -92,6 +99,7 @@ Sub ConvertTextToLower()
     End If
 
     Call Onn
+    HideLoading
     
     ' Unsupported selection
     MsgBox "The selected object is not supported. Please select cells or text-based shapes.", vbExclamation, "Invalid Selection"

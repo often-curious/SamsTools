@@ -29,7 +29,7 @@ Below are some key features, though not all are listed.
 |![Model Formatting](assets/features/ModelFormatting.jpg)    |Model Formatting          |Preset model formats to quickly format cells as inputs, calculations, links, errors etc...   |
 |![Value Formatting](assets/features/ValueFormatting.jpg)    |Value Formatting          |Quickly format values as absolute, dollars, bps and +/- % - the thousands (k) and millions (m) buttons display the numbers in the respective formats without changing the number.    |
 |![Colour Formatting](assets/features/ColourFormatting.jpg)    |Colour Formatting          |Pre-define your key brand colour and set them as 1, 2, or 3 (this will let you apply the brand formatting to any cell, table or chart selected and needs to be configured in the 'Formatting Extras' menu) you can also make the selected cell/object bighter or darker, format cell outlines white, and pick colours from selected cells.  |
-|![Formatting Extras](assets/features/FormattingExtras.jpg)    |Formatting Extras          |The menu includes functions such as setting the brand colours, converting merged cells to centre across, ...   |
+|![Formatting Extras](assets/features/FormattingExtras.jpg)    |Formatting Extras          |The menu includes functions such as setting the brand colours, converting merged cells to centre across, quick formatting pivot tables and change positions of any cell, range or object.  |
 |![Trace Precedents](assets/features/TracePrecedents.jpg)    |Trace Precedents          |A more insightful approach to auditing formulas to see which cells precede (or are inputs to) the outcome.   |
 |![Trace Dependents](assets/features/TraceDependents.jpg)    |Trace Dependents          |A more insightful approach to auditing formulas to see which cells depend on (or use the selected cell as inputs) for their outcome.   |
 |![Find Anything](assets/features/FindAnything.jpg)    |Find Anything          |Dynamic search function which will display all results as you type and let you select which ones to go to.   |
@@ -56,7 +56,7 @@ A step-by-step guide to installing **Sam's Tools** in Excel:
 #### For Windows
 
 1. **Prerequisite**: Ensure any previous versions of Sam's Tools are uninstalled to avoid conflicts.
-2. **Download Sam's Tools**: Download the latest [release of Sam's Tools](https://github.com/often-curious/SamsTools/tree/main/releases) (i.e., `.xlam` file).
+2. **Download Sam's Tools**: Download the latest [release of Sam's Tools](https://github.com/often-curious/SamsTools/tree/main/releases) (i.e. `.xlam` file).
 3. **Move the File**: Place the `.xlam` file in the correct add-ins folder - paste the following in your file explorer: `%appdata%\Microsoft\addins` or `C:\Users\[Your Username]\AppData\Roaming\Microsoft\AddIns`
 4. **Configure Excel**:
    - Open Excel and go to **File** > **Options**.

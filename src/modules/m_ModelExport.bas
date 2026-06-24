@@ -17,7 +17,7 @@ Option Explicit
 Public Sub ExportFormulaMap(control As IRibbonControl)
 
     ' --- Variable Declaration ---
-    Dim Wb As Workbook
+    Dim wb As Workbook
     Dim ws As Worksheet
     Dim cell As Range
     Dim formulaCells As Range
@@ -37,10 +37,10 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
     On Error GoTo ErrorHandler
     Application.ScreenUpdating = False ' Speed up execution
     
-    Set Wb = ActiveWorkbook
+    Set wb = ActiveWorkbook
     
     ' --- 1. Select Folder and Create File Path ---
-    fileName = "Formula_Log_" & Replace(Wb.Name, ".xlsm", "") & "_" & Format(Now, "yyyy-mm-dd_hh-mm-ss") & ".txt"
+    fileName = "Formula_Log_" & Replace(wb.Name, ".xlsm", "") & "_" & Format(Now, "yyyy-mm-dd_hh-mm-ss") & ".txt"
     filePath = Application.GetSaveAsFilename(InitialFileName:=fileName, _
         FileFilter:="Text Files (*.txt), *.txt", Title:="Save Formula Log As")
     
@@ -57,7 +57,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
     fileStream.WriteLine "====================================================================="
     fileStream.WriteLine "             Excel Formula & Name Manager Dependency Log"
     fileStream.WriteLine "====================================================================="
-    fileStream.WriteLine "Workbook: " & Wb.FullName
+    fileStream.WriteLine "Workbook: " & wb.FullName
     fileStream.WriteLine "Exported On: " & Now()
     fileStream.WriteLine ""
     
@@ -67,8 +67,8 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
     fileStream.WriteLine "---------------------------------------------------------------------"
     
     nameCounter = 0
-    If Wb.Names.count > 0 Then
-        For Each nm In Wb.Names
+    If wb.Names.count > 0 Then
+        For Each nm In wb.Names
             If Not (nm.Name Like "_xlfn.*" Or nm.Name Like "_xlpm.*") Then
                 nameCounter = nameCounter + 1
                 fileStream.WriteLine "Name:     " & nm.Name
@@ -94,7 +94,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
     fileStream.WriteLine "---------------------------------------------------------------------"
     
     tableCounter = 0
-    For Each ws In Wb.Worksheets
+    For Each ws In wb.Worksheets
         For Each tbl In ws.ListObjects
             tableCounter = tableCounter + 1
             fileStream.WriteLine "Table Name: " & tbl.Name
@@ -110,7 +110,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
     fileStream.WriteLine ""
     
     ' --- 5. Loop Through Each Worksheet and Export Formulas & Dependencies ---
-    For Each ws In Wb.Worksheets
+    For Each ws In wb.Worksheets
         
         fileStream.WriteLine "====================================================================="
         fileStream.WriteLine "          FORMULAS & DEPENDENCIES IN SHEET: '" & ws.Name & "'"

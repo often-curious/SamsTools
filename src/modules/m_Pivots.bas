@@ -6,7 +6,7 @@ Sub PivotTable_ClassicSettings(control As IRibbonControl)
     Dim pt As PivotTable
     Dim pf As PivotField
     Dim i As Long
-
+    
     On Error Resume Next
     ' Safely get the current PivotTable from the active cell
     Set pt = ActiveCell.PivotTable
@@ -25,6 +25,7 @@ Sub PivotTable_ClassicSettings(control As IRibbonControl)
     Application.ScreenUpdating = False
     Application.EnableEvents = False
     pt.ManualUpdate = True
+    ShowLoading "Formatting Pivot Table..."
 
     ' --- Classic / Tabular look and feel ---
     With pt
@@ -67,6 +68,7 @@ Sub PivotTable_ClassicSettings(control As IRibbonControl)
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
+    HideLoading
 
     ' Cleanup
     Set pf = Nothing

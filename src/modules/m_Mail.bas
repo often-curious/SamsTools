@@ -301,7 +301,7 @@ Sub Mail_Selected_Sheets_VALUES(control As IRibbonControl)
     Dim TempFileName As String
     Dim OutApp As Object
     Dim OutMail As Object
-    Dim Sh As Worksheet
+    Dim sh As Worksheet
     Dim TheActiveWindow As Window
     Dim TempWindow As Window
     Dim TempName As Variant
@@ -358,16 +358,16 @@ Sub Mail_Selected_Sheets_VALUES(control As IRibbonControl)
     End With
 
         'Change all cells in the worksheets to values if you want
-        For Each Sh In Destwb.Worksheets
-            Sh.Select
-            With Sh.UsedRange
+        For Each sh In Destwb.Worksheets
+            sh.Select
+            With sh.UsedRange
                 .Cells.Copy
                 .Cells.PasteSpecial xlPasteValues
                 .Cells(1).Select
             End With
             Application.CutCopyMode = False
             Destwb.Worksheets(1).Select
-        Next Sh
+        Next sh
 
     'Save the new workbook/Mail it/Delete it
     TempFilePath = Environ$("temp") & "\"

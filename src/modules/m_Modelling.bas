@@ -32,6 +32,9 @@ Sub FillSequentialNumbers(control As IRibbonControl)
     
     Dim cell As Range
     Dim counter As Long
+    
+    ShowLoading "Adding numbers..."
+    
     counter = 1
     
     ' Loop through each cell in the selection in order
@@ -39,6 +42,9 @@ Sub FillSequentialNumbers(control As IRibbonControl)
         cell.value = counter
         counter = counter + 1
     Next cell
+    
+    HideLoading
+    
 End Sub
 
 
@@ -51,6 +57,8 @@ Sub FillSequentialLetters(control As IRibbonControl)
     Set rng = Selection
     count = 0
     
+    ShowLoading "Adding letters..."
+    
     Application.ScreenUpdating = False
 
     For Each cell In rng.Cells
@@ -58,6 +66,8 @@ Sub FillSequentialLetters(control As IRibbonControl)
         count = count + 1
     Next cell
 
+    HideLoading
+    
     Application.ScreenUpdating = True
 End Sub
 
@@ -86,6 +96,8 @@ Sub FlagFormulasWithPlugs(control As IRibbonControl)
     Dim cellRefs As Object, numberMatches As Object
     Dim formula As String, match, val
     Dim hasPlug As Boolean
+    
+    ShowLoading "Finding plugs..."
 
     ' Regex for cell refs like A1, $A$1
     Set regexCellRef = CreateObject("VBScript.RegExp")
@@ -179,32 +191,50 @@ ContinueLoop:
             Next match
 
             If hasPlug Then
-                With cell.Borders(xlEdgeLeft)
-                    .LineStyle = xlContinuous
-                    .Weight = xlThick
-                    .color = vbRed
-                End With
-                With cell.Borders(xlEdgeTop)
-                    .LineStyle = xlContinuous
-                    .Weight = xlThick
-                    .color = vbRed
-                End With
-                With cell.Borders(xlEdgeRight)
-                    .LineStyle = xlContinuous
-                    .Weight = xlThick
-                    .color = vbRed
-                End With
-                With cell.Borders(xlEdgeBottom)
-                    .LineStyle = xlContinuous
-                    .Weight = xlThick
-                    .color = vbRed
+                With cell.FormatConditions.Add( _
+                    Type:=xlExpression, _
+                    Formula1:="=AND(TRUE,N(""PlugHighlight"")=0)")
+            
+                    .Interior.color = RGB(255, 199, 206)
+                    .Font.color = RGB(156, 0, 6)
                 End With
             End If
-        End If
+    End If
 NextCell:
     Next cell
 
-    MsgBox "Finished checking for plug values. These will be highlighted with a thick red border.", vbInformation
+    HideLoading
+
+    MsgBox "Finished checking for plug values - these will be highlighted red. If you need to remove plug formatting please run the 'Clear Plug Highlights Tool'", vbInformation
+End Sub
+
+Sub ClearPlugHighlights(control As IRibbonControl)
+
+    Dim cell As Range
+    Dim i As Long
+    Dim f As String
+    
+    ShowLoading "Clearing plugs..."
+
+    For Each cell In ActiveSheet.UsedRange
+        For i = cell.FormatConditions.count To 1 Step -1
+
+            f = ""
+            On Error Resume Next
+            f = cell.FormatConditions(i).Formula1
+            On Error GoTo 0
+
+            If InStr(1, f, "PlugHighlight", vbTextCompare) > 0 Then
+                cell.FormatConditions(i).Delete
+            End If
+
+        Next i
+    Next cell
+
+    HideLoading
+    
+    MsgBox "Plug highlights cleared.", vbInformation
+
 End Sub
 
 Sub FlagFormulasWithPlugsAndReport(control As IRibbonControl)
@@ -213,20 +243,24 @@ Sub FlagFormulasWithPlugsAndReport(control As IRibbonControl)
     Dim regexCellRef As Object, regexNumber As Object
     Dim cellRefs As Object, numberMatches As Object
     Dim summaryRow As Long, f As String
-    Dim Wb As Workbook, match, val, targetAddress As String
+    Dim wb As Workbook, match, val, targetAddress As String
     Dim hasPlug As Boolean
 
-    Set Wb = ActiveWorkbook
+    Set wb = ActiveWorkbook
+    
+    On Error GoTo ErrHandler
+    
+    ShowLoading "Finding plugs..."
 
     ' Delete old summary if it exists
     On Error Resume Next
     Application.DisplayAlerts = False
-    Wb.Worksheets("Plug Summary").Delete
+    wb.Worksheets("Plug Summary").Delete
     Application.DisplayAlerts = True
     On Error GoTo 0
 
     ' Create new summary sheet
-    Set summaryWS = Wb.Worksheets.Add(before:=Worksheets(1))
+    Set summaryWS = wb.Worksheets.Add(Before:=wb.Worksheets(1))
     summaryWS.Name = "Plug Summary"
 
     ' Add headers
@@ -235,7 +269,9 @@ Sub FlagFormulasWithPlugsAndReport(control As IRibbonControl)
     summaryWS.Range("A1:D1").Borders(xlEdgeBottom).LineStyle = xlContinuous
     summaryWS.Range("A1:D1").Borders(xlEdgeBottom).Weight = xlMedium
     summaryWS.Columns("A:D").ColumnWidth = 30
-    summaryWS.Range(Cells(1, 5), Cells(1, Columns.count)).EntireColumn.Hidden = True
+    With summaryWS
+        .Range(.Cells(1, 5), .Cells(1, .Columns.count)).EntireColumn.Hidden = True
+    End With
     
     summaryRow = 2
 
@@ -267,7 +303,7 @@ Sub FlagFormulasWithPlugsAndReport(control As IRibbonControl)
     "HOUR", "MINUTE", "SECOND", "TODAY", "NOW", "TIME", "DATEVALUE", "TIMEVALUE")
     
     ' Loop through all worksheets
-    For Each ws In Wb.Worksheets
+    For Each ws In wb.Worksheets
         If ws.Name <> "Plug Summary" Then
             For Each cell In ws.UsedRange
                 If cell.HasFormula Then
@@ -348,7 +384,22 @@ NextMatch:
         End If
     Next ws
 
-    MsgBox "Plug formulas flagged and summary with hyperlinks created.", vbInformation
+MsgBox "Plug formulas flagged and summary with hyperlinks created.", vbInformation
+
+CleanExit:
+        On Error Resume Next
+        HideLoading
+        Application.DisplayAlerts = True
+        On Error GoTo 0
+        
+        Exit Sub
+    
+ErrHandler:
+        MsgBox "The macro stopped because of this error:" & vbCrLf & _
+               Err.Number & " - " & Err.Description, vbExclamation
+        Resume CleanExit
+
+    
 End Sub
 
 
@@ -356,6 +407,7 @@ Function GetPlugComment(formula As String) As String
     Dim regexNumber As Object, regexCellRef As Object
     Dim matches, match
     Dim cellRefs As Object, ignoreFunctions As Variant
+    Dim key As Variant
     Dim f As String: f = Mid(formula, 2) ' Remove leading "="
 
     ' Setup regex for numbers

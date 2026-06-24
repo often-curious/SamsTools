@@ -192,7 +192,7 @@ Function FindAllOnWorksheets(InWorkbook As Workbook, _
 
 Dim WSArray() As String
 Dim ws As Worksheet
-Dim Wb As Workbook
+Dim wb As Workbook
 Dim ResultRange() As Range
 Dim WSNdx As Long
 Dim r As Range
@@ -206,9 +206,9 @@ Dim n As Long
 ' Determine what Workbook to search.
 '''''''''''''''''''''''''''''''''''''''''''
 If InWorkbook Is Nothing Then
-    Set Wb = ActiveWorkbook
+    Set wb = ActiveWorkbook
 Else
-    Set Wb = InWorkbook
+    Set wb = InWorkbook
 End If
 
 '''''''''''''''''''''''''''''''''''''''''''
@@ -218,10 +218,10 @@ If IsEmpty(InWorksheets) = True Then
     ''''''''''''''''''''''''''''''''''''''''''
     ' Empty. Search all sheets.
     ''''''''''''''''''''''''''''''''''''''''''
-    With Wb.Worksheets
+    With wb.Worksheets
         ReDim WSArray(1 To .count)
         For WSNdx = 1 To .count
-            WSArray(WSNdx) = .Item(WSNdx).Name
+            WSArray(WSNdx) = .item(WSNdx).Name
         Next WSNdx
     End With
 
@@ -235,7 +235,7 @@ Else
             ''''''''''''''''''''''''''''''''''''''''''
             ' Ensure Worksheet is in the WB workbook.
             ''''''''''''''''''''''''''''''''''''''''''
-            If StrComp(InWorksheets.Parent.Name, Wb.Name, vbTextCompare) <> 0 Then
+            If StrComp(InWorksheets.Parent.Name, wb.Name, vbTextCompare) <> 0 Then
                 ''''''''''''''''''''''''''''''
                 ' Sheet is not in WB. Get out.
                 ''''''''''''''''''''''''''''''
@@ -291,7 +291,7 @@ Else
                             '''''''''''''''''''''''''''''''''''
                             ' Ensure integer if valid index.
                             '''''''''''''''''''''''''''''''''''
-                            Set ws = Wb.Worksheets(InWorksheets(WSNdx))
+                            Set ws = wb.Worksheets(InWorksheets(WSNdx))
                             If Err.Number <> 0 Then
                                 '''''''''''''''''''''''''''''''
                                 ' Invalid index.
@@ -301,13 +301,13 @@ Else
                             ''''''''''''''''''''''''''''''''''''
                             ' Valid index. Get name.
                             ''''''''''''''''''''''''''''''''''''
-                            WSArray(WSNdx) = Wb.Worksheets(InWorksheets(WSNdx)).Name
+                            WSArray(WSNdx) = wb.Worksheets(InWorksheets(WSNdx)).Name
                         Case "STRING"
                             Err.Clear
                             '''''''''''''''''''''''''''''''''''''
                             ' Ensure valid name.
                             '''''''''''''''''''''''''''''''''''''
-                            Set ws = Wb.Worksheets(InWorksheets(WSNdx))
+                            Set ws = wb.Worksheets(InWorksheets(WSNdx))
                             If Err.Number <> 0 Then
                                 '''''''''''''''''''''''''''''''''
                                 ' Invalid name, get out.
@@ -331,14 +331,14 @@ Else
                     ' It is a number. Ensure sheet exists.
                     '''''''''''''''''''''''''''''''''''''''
                     Err.Clear
-                    Set ws = Wb.Worksheets(InWorksheets)
+                    Set ws = wb.Worksheets(InWorksheets)
                     If Err.Number <> 0 Then
                         '''''''''''''''''''''''''''''''
                         ' Invalid index, get out.
                         '''''''''''''''''''''''''''''''
                         Exit Function
                     Else
-                        WSArray = Array(Wb.Worksheets(InWorksheets).Name)
+                        WSArray = Array(wb.Worksheets(InWorksheets).Name)
                     End If
                 Case "STRING"
                     '''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -371,7 +371,7 @@ Else
                         ReDim WSArray(LBound(WSS) To UBound(WSS))
                         For n = LBound(WSS) To UBound(WSS)
                             Err.Clear
-                            Set ws = Wb.Worksheets(WSS(n))
+                            Set ws = wb.Worksheets(WSS(n))
                             If Err.Number <> 0 Then
                                 Exit Function
                             End If
@@ -379,7 +379,7 @@ Else
                          Next n
                     Else
                         Err.Clear
-                        Set ws = Wb.Worksheets(InWorksheets)
+                        Set ws = wb.Worksheets(InWorksheets)
                         If Err.Number <> 0 Then
                             '''''''''''''''''''''''''''''''''
                             ' Invalid name, get out.
@@ -399,7 +399,7 @@ End If
 On Error Resume Next
 For WSNdx = LBound(WSArray) To UBound(WSArray)
     Err.Clear
-    Set ws = Wb.Worksheets(WSArray(WSNdx))
+    Set ws = wb.Worksheets(WSArray(WSNdx))
     ''''''''''''''''''''''''''''''''''''''''
     ' Worksheet does not exist
     ''''''''''''''''''''''''''''''''''''''''
@@ -407,7 +407,7 @@ For WSNdx = LBound(WSArray) To UBound(WSArray)
         Exit Function
     End If
     Err.Clear
-    Set r = Wb.Worksheets(WSArray(WSNdx)).Range(SearchAddress)
+    Set r = wb.Worksheets(WSArray(WSNdx)).Range(SearchAddress)
     If Err.Number <> 0 Then
         ''''''''''''''''''''''''''''''''''''
         ' Invalid Range. Get out.
@@ -423,7 +423,7 @@ Next WSNdx
 ''''''''''''''''''''''''''''''''''''''''
 ReDim ResultRange(LBound(WSArray) To UBound(WSArray))
 For WSNdx = LBound(WSArray) To UBound(WSArray)
-    Set ws = Wb.Worksheets(WSArray(WSNdx))
+    Set ws = wb.Worksheets(WSArray(WSNdx))
     Set SearchRange = ws.Range(SearchAddress)
     Set FoundRange = FindAll(SearchRange:=SearchRange, _
                     FindWhat:=FindWhat, _

@@ -379,20 +379,20 @@ Sub RemoveAllNames(control As IRibbonControl)
     ' Check workbook
     If ActiveWorkbook Is Nothing Then
         MsgBox "No workbook is currently active.", vbExclamation
-        GoTo Cleanup
+        GoTo CleanUp
     End If
 
     ' Confirm deletion
     If MsgBox("Are you sure you want to remove ALL names (including hidden) from '" & ActiveWorkbook.Name & "'?", _
               vbYesNo + vbQuestion, "Confirm Name Removal") <> vbYes Then
-        GoTo Cleanup
+        GoTo CleanUp
     End If
 
     ' Cache names to array
     nameCount = ActiveWorkbook.Names.count
     If nameCount = 0 Then
         MsgBox "No defined names found.", vbInformation
-        GoTo Cleanup
+        GoTo CleanUp
     End If
 
     ReDim nmArray(1 To nameCount)
@@ -427,7 +427,7 @@ Sub RemoveAllNames(control As IRibbonControl)
     End If
     MsgBox msg, vbInformation, "Name Removal Summary"
 
-Cleanup:
+CleanUp:
     ' Restore Excel settings
     With Application
         .ScreenUpdating = True
@@ -440,7 +440,7 @@ Cleanup:
 
 CleanupWithError:
     MsgBox "An unexpected error occurred: " & Err.Description, vbExclamation
-    Resume Cleanup
+    Resume CleanUp
 End Sub
 
 
@@ -466,13 +466,13 @@ Sub RemoveBrokenNames(control As IRibbonControl)
     ' Check active workbook
     If ActiveWorkbook Is Nothing Then
         MsgBox "No workbook is currently active.", vbExclamation
-        GoTo Cleanup
+        GoTo CleanUp
     End If
 
     nameCount = ActiveWorkbook.Names.count
     If nameCount = 0 Then
         MsgBox "No defined names found.", vbInformation
-        GoTo Cleanup
+        GoTo CleanUp
     End If
 
     ' Cache names
@@ -507,7 +507,7 @@ Sub RemoveBrokenNames(control As IRibbonControl)
         MsgBox "No broken names found in '" & ActiveWorkbook.Name & "'.", vbInformation
     End If
 
-Cleanup:
+CleanUp:
     ' Restore settings
     With Application
         .ScreenUpdating = True
@@ -519,7 +519,7 @@ Cleanup:
 
 CleanupWithError:
     MsgBox "An error occurred: " & Err.Description, vbExclamation
-    Resume Cleanup
+    Resume CleanUp
 End Sub
 
 Private Function SliceArray(arr() As String, count As Long) As Variant
@@ -555,11 +555,11 @@ Sub DeleteAllNames_Fastest()
 
     If ActiveWorkbook Is Nothing Then
         MsgBox "No active workbook.", vbExclamation
-        GoTo Cleanup
+        GoTo CleanUp
     End If
 
     nameCount = ActiveWorkbook.Names.count
-    If nameCount = 0 Then GoTo Cleanup
+    If nameCount = 0 Then GoTo CleanUp
 
     ' Cache names
     ReDim nmArray(1 To nameCount)
@@ -575,7 +575,7 @@ Sub DeleteAllNames_Fastest()
         On Error GoTo 0
     Next i
 
-Cleanup:
+CleanUp:
     ' Restore settings
     With Application
         .StatusBar = False
@@ -588,7 +588,7 @@ Cleanup:
 
 CleanupWithError:
     MsgBox "Error: " & Err.Description, vbExclamation
-    Resume Cleanup
+    Resume CleanUp
 End Sub
 
 

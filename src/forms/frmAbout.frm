@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Const SamsToolsVersion As String = "2.0"
+Const SamsToolsVersion As String = "2026.06"
 
 Private Sub btnOK_Click()
     Unload Me
@@ -26,6 +26,10 @@ End Sub
 Private Sub btnParty_Click()
     Unload Me
     Call TriggerEasterEgg
+End Sub
+
+Private Sub lblIcon8Credit_Click()
+
 End Sub
 
 Private Sub UserForm_Initialize()

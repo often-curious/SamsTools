@@ -111,7 +111,7 @@ Sub TriggerEasterEgg()
     Dim r As Range
     Dim colorOptions(1 To 3) As Long
 
-    On Error GoTo Cleanup
+    On Error GoTo CleanUp
     
     frmParty.btnEndParty.Enabled = False
 
@@ -145,15 +145,15 @@ Sub TriggerEasterEgg()
     For cycle = 1 To 7
         For i = 1 To flashCells.count
             Set r = flashCells(i)
-            Dim ColorIndex As Long
-            ColorIndex = Int((Rnd() * 3) + 1)
-            r.Interior.color = colorOptions(ColorIndex)
+            Dim colorIndex As Long
+            colorIndex = Int((Rnd() * 3) + 1)
+            r.Interior.color = colorOptions(colorIndex)
         Next i
         DoEvents
         Application.Wait Now + TimeValue("00:00:01")
     Next cycle
 
-Cleanup:
+CleanUp:
     ' Restore original colors
     For i = 1 To flashCells.count
         flashCells(i).Interior.color = originalColors(i)

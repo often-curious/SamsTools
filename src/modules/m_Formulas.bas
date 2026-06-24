@@ -2,7 +2,7 @@ Attribute VB_Name = "m_Formulas"
 Function BeautifyString(InputString As String) As String
     Dim i As Long
     Dim StringLength As Long
-    Dim InQuotes As Boolean
+    Dim inQuotes As Boolean
     Dim IndentLevel As Long
     Dim MaxIndent As Long: MaxIndent = 10
     Dim NewLineIndented(0 To 20) As String
@@ -10,7 +10,7 @@ Function BeautifyString(InputString As String) As String
     Dim Pos As Long
     Dim InputPart As String
     Dim InlineBuffer As String
-    Dim j As Long, Depth As Long
+    Dim j As Long, depth As Long
     Dim commaCount As Long, nestedParens As Long
 
     StringLength = Len(InputString)
@@ -21,7 +21,7 @@ Function BeautifyString(InputString As String) As String
         NewLineIndented(i) = vbLf & Space$(i * 4)
     Next i
 
-    InQuotes = False
+    inQuotes = False
     IndentLevel = 0
     Pos = 1
     i = 1
@@ -30,14 +30,14 @@ Function BeautifyString(InputString As String) As String
         InputPart = Mid(InputString, i, 1)
 
         If InputPart = """" Then
-            InQuotes = Not InQuotes
+            inQuotes = Not inQuotes
             OutputParts(Pos) = InputPart
             Pos = Pos + 1
             i = i + 1
             GoTo NextChar
         End If
 
-        If InQuotes Then
+        If inQuotes Then
             OutputParts(Pos) = InputPart
             Pos = Pos + 1
             i = i + 1
@@ -46,7 +46,7 @@ Function BeautifyString(InputString As String) As String
 
         If InputPart = "(" Then
             InlineBuffer = ""
-            Depth = 1
+            depth = 1
             commaCount = 0
             nestedParens = 0
 
@@ -54,17 +54,17 @@ Function BeautifyString(InputString As String) As String
                 Dim ch As String: ch = Mid(InputString, j, 1)
                 If ch = """" Then Exit For
                 If ch = "(" Then
-                    Depth = Depth + 1
+                    depth = depth + 1
                     nestedParens = nestedParens + 1
                 End If
-                If ch = ")" Then Depth = Depth - 1
-                If ch = "," And Depth = 1 Then commaCount = commaCount + 1
-                If Depth = 0 Then Exit For
+                If ch = ")" Then depth = depth - 1
+                If ch = "," And depth = 1 Then commaCount = commaCount + 1
+                If depth = 0 Then Exit For
                 InlineBuffer = InlineBuffer & ch
             Next j
 
             ' Allow inline if it's small, no commas, and shallow
-            If Depth = 0 And Len(InlineBuffer) <= 30 And commaCount = 0 And nestedParens = 0 Then
+            If depth = 0 And Len(InlineBuffer) <= 30 And commaCount = 0 And nestedParens = 0 Then
                 OutputParts(Pos) = "(" & InlineBuffer & ")"
                 Pos = Pos + 1
                 i = j + 1
@@ -118,6 +118,8 @@ Sub BeautifyFormula(control As IRibbonControl)
     Dim minParenToBeautify As Long: minParenToBeautify = 2
     Dim minLengthToBeautify As Long: minLengthToBeautify = 20
 
+    ShowLoading "Beautifying formula's..."
+    
     For Each cell In Selection
         If cell.HasFormula Then
             originalFormula = cell.formula
@@ -135,28 +137,31 @@ Sub BeautifyFormula(control As IRibbonControl)
         End If
 SkipCell:
     Next cell
+    
+HideLoading
+
 End Sub
 
 
 Function MinifyString(InputString As String) As String
     Dim i As Long
     Dim Char As String
-    Dim InQuotes As Boolean
+    Dim inQuotes As Boolean
     Dim CleanParts() As String
     Dim Pos As Long
     ReDim CleanParts(1 To Len(InputString) * 2)
 
-    InQuotes = False
+    inQuotes = False
     Pos = 1
 
     For i = 1 To Len(InputString)
         Char = Mid(InputString, i, 1)
 
         If Char = """" Then
-            InQuotes = Not InQuotes
+            inQuotes = Not inQuotes
             CleanParts(Pos) = Char
             Pos = Pos + 1
-        ElseIf InQuotes Then
+        ElseIf inQuotes Then
             CleanParts(Pos) = Char
             Pos = Pos + 1
         Else
@@ -184,6 +189,8 @@ Sub MinifyFormula(control As IRibbonControl)
     Dim originalFormula As String
     Dim minified As String
 
+    ShowLoading "Minifying formula's..."
+
     For Each cell In Selection
         If cell.HasFormula Then
             originalFormula = cell.formula
@@ -191,11 +198,15 @@ Sub MinifyFormula(control As IRibbonControl)
             cell.formula = minified
         End If
     Next cell
+    
+HideLoading
+
 End Sub
 
 Sub EncapsulateIFERROR_ZERO(control As IRibbonControl)
 
     Dim c As Range
+    ShowLoading "Adding error check..."
 
     For Each c In Selection.Cells
         Select Case Left(c.formula, 1)
@@ -207,12 +218,13 @@ Sub EncapsulateIFERROR_ZERO(control As IRibbonControl)
                 c.formula = "=IFERROR(" & c.formula & ",0)"
         End Select
     Next c
+    HideLoading
 End Sub
 
 Sub EncapsulateIFERROR_BLANK(control As IRibbonControl)
 
     Dim c As Range
-
+    ShowLoading "Adding error check..."
     For Each c In Selection.Cells
         Select Case Left(c.formula, 1)
             Case "="
@@ -223,6 +235,7 @@ Sub EncapsulateIFERROR_BLANK(control As IRibbonControl)
                 c.formula = "=IFERROR(" & c.formula & ","""")"
         End Select
     Next c
+    HideLoading
 End Sub
 
 Sub RemoveSheetNameReferences(control As IRibbonControl)
@@ -232,6 +245,8 @@ Sub RemoveSheetNameReferences(control As IRibbonControl)
     Dim re As Object
     Dim sheetName As String, sheetQuoted As String, bookName As String, pattern As String
 
+    ShowLoading "Removing sheet names..."
+    
     ' Identify active sheet and workbook
     sheetName = ActiveSheet.Name
     bookName = ThisWorkbook.Name
@@ -279,6 +294,8 @@ Sub RemoveSheetNameReferences(control As IRibbonControl)
     Application.Calculation = xlCalculationAutomatic
     Application.EnableEvents = True
     Application.ScreenUpdating = True
+    
+    HideLoading
 
     'MsgBox "Removed references to the active sheet only (" & sheetName & ").", vbInformation
 End Sub

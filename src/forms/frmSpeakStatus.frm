@@ -25,10 +25,6 @@ Private Sub btnCancel_Click()
     Me.Hide
 End Sub
 
-Private Sub lblStatus_Click()
-
-End Sub
-
 Private Sub UserForm_Initialize()
     isCancelled = False
 End Sub

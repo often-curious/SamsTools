@@ -329,16 +329,24 @@ End If
 End Sub
 
 Sub FormatPlusMinusPercent(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "+#,##0.0%;[Red]-#,##0.0%;"" - """ Then
-cellranges.numberFormat = "[Red]+#,##0.0%;-#,##0.0%;"" - """
-ElseIf cellranges.numberFormat = "[Red]+#,##0.0%;-#,##0.0%;"" - """ Then
-cellranges.numberFormat = "#,##0.0%;[Red](#,##0.0%);"" - """
-ElseIf cellranges.numberFormat = "#,##0.0%;[Red](#,##0.0%);"" - """ Then
-cellranges.numberFormat = "[Red]#,##0.0%;(#,##0.0%);"" - """
-Else
-cellranges.numberFormat = "+#,##0.0%;[Red]-#,##0.0%;"" - """
-End If
+
+    Dim cellranges As Range
+    Set cellranges = Application.Selection
+    
+    If cellranges.numberFormat = "+#,##0.0%;[Red]-#,##0.0%;"" - """ Then
+        cellranges.numberFormat = "[Red]+#,##0.0%;-#,##0.0%;"" - """
+    ElseIf cellranges.numberFormat = "[Red]+#,##0.0%;-#,##0.0%;"" - """ Then
+        cellranges.numberFormat = "#,##0.0%;[Red](#,##0.0%);"" - """
+    ElseIf cellranges.numberFormat = "#,##0.0%;[Red](#,##0.0%);"" - """ Then
+        cellranges.numberFormat = "[Red]#,##0.0%;(#,##0.0%);"" - """
+    ElseIf cellranges.numberFormat = "[Red]#,##0.0%;(#,##0.0%);"" - """ Then
+        cellranges.numberFormat = ChrW(8593) & "0%;[Red]" & ChrW(8595) & "0%;"" - """
+    ElseIf cellranges.numberFormat = ChrW(8593) & "0%;[Red]" & ChrW(8595) & "0%;"" - """ Then
+        cellranges.numberFormat = "[Red]" & ChrW(8593) & "0%;" & ChrW(8595) & "0%;"" - """
+    Else
+        cellranges.numberFormat = "+#,##0.0%;[Red]-#,##0.0%;"" - """
+    End If
+
 End Sub
 
 
@@ -369,41 +377,41 @@ Public Sub Do_Cell_Model_Formatting()
         cellselected.BorderAround _
             LineStyle:=xlContinuous, _
             Weight:=xlThin, _
-            ColorIndex:=15
+            colorIndex:=15
     Next cellselected
 
     ' Conditional formatting & styling
-    If cellranges.Font.ColorIndex = 5 And cellranges.Interior.ColorIndex = 19 Then
-        cellranges.Interior.ColorIndex = 0
-        cellranges.Font.ColorIndex = 45
-        ActiveWorkbook.Styles.Add Name:="Linked Cell", BasedOn:=ActiveCell
-        cellranges.Style = "Linked Cell"
+    If cellranges.Font.colorIndex = 5 And cellranges.Interior.colorIndex = 19 Then
+        cellranges.Interior.colorIndex = 0
+        cellranges.Font.colorIndex = 45
+        'ActiveWorkbook.Styles.Add Name:="Linked Cell", BasedOn:=ActiveCell
+        'cellranges.Style = "Linked Cell"
     
-    ElseIf cellranges.Font.ColorIndex = 45 Then
-        cellranges.Interior.ColorIndex = 15
-        cellranges.Font.ColorIndex = 10
+    ElseIf cellranges.Font.colorIndex = 45 Then
+        cellranges.Interior.colorIndex = 15
+        cellranges.Font.colorIndex = 10
         For Each cellselected In cellranges
             'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
             cellselected.BorderAround _
                 LineStyle:=xlDouble, _
                 Weight:=xlThin, _
-                ColorIndex:=16
+                colorIndex:=16
         Next cellselected
         cellranges.numberFormat = "[Color10][=0]""Ok"";[Red]""Error"""
-        ActiveWorkbook.Styles.Add Name:="Check Cell", BasedOn:=ActiveCell
-        cellranges.Style = "Check Cell"
+        'ActiveWorkbook.Styles.Add Name:="Check Cell", BasedOn:=ActiveCell
+        'cellranges.Style = "Check Cell"
     
-    ElseIf cellranges.Interior.ColorIndex = 15 Then
-        cellranges.Interior.ColorIndex = 0
-        cellranges.Font.ColorIndex = 1
-        ActiveWorkbook.Styles.Add Name:="Calculation", BasedOn:=ActiveCell
-        cellranges.Style = "Calculation"
+    ElseIf cellranges.Interior.colorIndex = 15 Then
+        cellranges.Interior.colorIndex = 0
+        cellranges.Font.colorIndex = 1
+        'ActiveWorkbook.Styles.Add Name:="Calculation", BasedOn:=ActiveCell
+        'cellranges.Style = "Calculation"
     
     Else
-        cellranges.Interior.ColorIndex = 19
-        cellranges.Font.ColorIndex = 5
-        ActiveWorkbook.Styles.Add Name:="Input", BasedOn:=ActiveCell
-        cellranges.Style = "Input"
+        cellranges.Interior.colorIndex = 19
+        cellranges.Font.colorIndex = 5
+        'ActiveWorkbook.Styles.Add Name:="Input", BasedOn:=ActiveCell
+        'cellranges.Style = "Input"
     End If
 
     On Error GoTo 0 ' Turn off error bypassing
@@ -413,29 +421,52 @@ Public Sub Do_Cell_Model_Formatting()
 End Sub
 
 Sub Apply_Input_Style(control As IRibbonControl)
-    Dim cellranges As Range
-    Dim cellselected As Range
 
-    On Error Resume Next
+    Dim cellranges As Range
+    Dim s As Style
+
     Application.ScreenUpdating = False
     Application.EnableEvents = False
 
-    Set cellranges = Application.Selection
+    Set cellranges = Selection
 
-    For Each cellselected In cellranges
-        'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, ColorIndex:=15
-    Next cellselected
+    ' Get or create style
+    On Error Resume Next
+    Set s = ActiveWorkbook.Styles("Input")
+    On Error GoTo 0
 
-    cellranges.Interior.ColorIndex = 19
-    cellranges.Font.ColorIndex = 5
-    ActiveWorkbook.Styles.Add Name:="Input", BasedOn:=ActiveCell
+    If s Is Nothing Then
+        Set s = ActiveWorkbook.Styles.Add("Input")
+    End If
+
+    ' Define style (no number formatting, no borders)
+    With s
+        .IncludeNumber = False
+        .IncludeFont = True
+        .IncludePatterns = True
+        .IncludeBorder = False
+        .IncludeAlignment = False
+        .IncludeProtection = False
+
+        .Interior.colorIndex = 19
+        .Font.colorIndex = 5
+    End With
+
+    ' Apply style
     cellranges.Style = "Input"
+
+    ' Outline each cell
+    With cellranges.Borders
+        .LineStyle = xlContinuous
+        .Weight = xlThin
+        .colorIndex = 15
+    End With
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
-    On Error GoTo 0
+
 End Sub
+
 
 Sub Apply_Linked_Style(control As IRibbonControl)
     Dim cellranges As Range
@@ -448,14 +479,14 @@ Sub Apply_Linked_Style(control As IRibbonControl)
     
     For Each cellselected In cellranges
         'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, ColorIndex:=15
+        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, colorIndex:=15
     Next cellselected
 
     'cellranges.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-    cellranges.Interior.ColorIndex = 0
-    cellranges.Font.ColorIndex = 45
-    ActiveWorkbook.Styles.Add Name:="Linked Cell", BasedOn:=ActiveCell
-    cellranges.Style = "Linked Cell"
+    cellranges.Interior.colorIndex = 0
+    cellranges.Font.colorIndex = 45
+    'ActiveWorkbook.Styles.Add Name:="Linked Cell", BasedOn:=ActiveCell
+    'cellranges.Style = "Linked Cell"
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -474,14 +505,14 @@ Sub Apply_Check_Style(control As IRibbonControl)
 
     For Each cellselected In cellranges
         'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-        cellselected.BorderAround LineStyle:=xlDouble, Weight:=xlThin, ColorIndex:=16
+        cellselected.BorderAround LineStyle:=xlDouble, Weight:=xlThin, colorIndex:=16
     Next cellselected
 
-    cellranges.Interior.ColorIndex = 15
-    cellranges.Font.ColorIndex = 10
+    cellranges.Interior.colorIndex = 15
+    cellranges.Font.colorIndex = 10
     cellranges.numberFormat = "[Color10][=0]""Ok"";[Red]""Error"""
-    ActiveWorkbook.Styles.Add Name:="Check Cell", BasedOn:=ActiveCell
-    cellranges.Style = "Check Cell"
+    'ActiveWorkbook.Styles.Add Name:="Check Cell", BasedOn:=ActiveCell
+    'cellranges.Style = "Check Cell"
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -499,13 +530,13 @@ Sub Apply_Calculation_Style(control As IRibbonControl)
 
     For Each cellselected In cellranges
         'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, ColorIndex:=15
+        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, colorIndex:=15
     Next cellselected
     
-    cellranges.Interior.ColorIndex = 0
-    cellranges.Font.ColorIndex = 1
-    ActiveWorkbook.Styles.Add Name:="Calculation", BasedOn:=ActiveCell
-    cellranges.Style = "Calculation"
+    cellranges.Interior.colorIndex = 0
+    cellranges.Font.colorIndex = 1
+    'ActiveWorkbook.Styles.Add Name:="Calculation", BasedOn:=ActiveCell
+    'cellranges.Style = "Calculation"
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -529,7 +560,7 @@ Sub Apply_NotUsed_Style(control As IRibbonControl)
         End With
     Next cellselected
 
-    cellranges.Font.ColorIndex = 1 ' Black font
+    cellranges.Font.colorIndex = 1 ' Black font
 
     ActiveWorkbook.Styles.Add Name:="Not Used", BasedOn:=ActiveCell
     cellranges.Style = "Not Used"
@@ -556,7 +587,7 @@ Sub Apply_Header_Style(control As IRibbonControl)
     cellranges.numberFormat = "#,##0.0;(#,##0.0);"" - """
     cellranges.Font.Name = "Arial"
     cellranges.Font.Bold = True
-    cellranges.Font.ColorIndex = 2 ' White font
+    cellranges.Font.colorIndex = 2 ' White font
 
     ActiveWorkbook.Styles.Add Name:="Header", BasedOn:=ActiveCell
     cellranges.Style = "Header"
@@ -582,7 +613,7 @@ Sub Apply_SubHeader_Style(control As IRibbonControl)
 
     cellranges.numberFormat = "#,##0.0;(#,##0.0);"" - """
     cellranges.Font.Name = "Arial"
-    cellranges.Font.ColorIndex = 1 ' Black font
+    cellranges.Font.colorIndex = 1 ' Black font
 
     ActiveWorkbook.Styles.Add Name:="Subheader", BasedOn:=ActiveCell
     cellranges.Style = "Subheader"
@@ -693,7 +724,7 @@ End Sub
 
 
 Sub Apply_ShortScale_NumberFormat(control As IRibbonControl)
-    Const NUMFMT As String = "[<1000]##,##0;[<1000000]#,###,""k"";#,###,,""m"""
+    Const numFmt As String = "[<1000]##,##0;[<1000000]#,###,""k"";#,###,,""m"""
     
     Dim appliedTo As Long
     Dim selType As String
@@ -706,13 +737,13 @@ Sub Apply_ShortScale_NumberFormat(control As IRibbonControl)
     
     ' 1) If cells are selected, apply directly
     If selType = "Range" Then
-        Selection.numberFormat = NUMFMT
+        Selection.numberFormat = numFmt
         appliedTo = appliedTo + Selection.Cells.count
     End If
     
     ' 2) If a chart or a chart part is selected, format axes + data labels
     If Not ActiveChart Is Nothing Then
-        appliedTo = appliedTo + FormatChartNumbers(ActiveChart, NUMFMT)
+        appliedTo = appliedTo + FormatChartNumbers(ActiveChart, numFmt)
     End If
     
     ' 3) If shapes are selected, iterate them (charts inside shapes, etc.)
@@ -720,32 +751,32 @@ Sub Apply_ShortScale_NumberFormat(control As IRibbonControl)
        Or selType = "GroupObject" Or selType = "ShapeRange" Then
        
         Dim sr As ShapeRange
-        Dim Sh As Shape
+        Dim sh As Shape
         On Error Resume Next
         Set sr = Selection.ShapeRange
         On Error GoTo 0
         
         If Not sr Is Nothing Then
-            For Each Sh In sr
-                appliedTo = appliedTo + HandleShapeNumberFormat(Sh, NUMFMT)
-            Next Sh
+            For Each sh In sr
+                appliedTo = appliedTo + HandleShapeNumberFormat(sh, numFmt)
+            Next sh
         End If
     End If
     
     ' 4) If a single object like Axis/DataLabels is selected, try direct set
     '    (safe no-op if property doesn’t exist)
     On Error Resume Next
-    Selection.numberFormat = NUMFMT
+    Selection.numberFormat = numFmt
     If Err.Number = 0 Then appliedTo = appliedTo + 1
     Err.Clear
     
     ' Axis specifically:
-    Selection.TickLabels.numberFormat = NUMFMT
+    Selection.TickLabels.numberFormat = numFmt
     If Err.Number = 0 Then appliedTo = appliedTo + 1
     Err.Clear
     
     ' DataLabels specifically:
-    Selection.DataLabels.numberFormat = NUMFMT
+    Selection.DataLabels.numberFormat = numFmt
     If Err.Number = 0 Then appliedTo = appliedTo + 1
     Err.Clear
     On Error GoTo 0
@@ -769,7 +800,7 @@ End Sub
 
 '==================== Helpers ====================
 
-Private Function FormatChartNumbers(ch As Chart, ByVal NUMFMT As String) As Long
+Private Function FormatChartNumbers(ch As Chart, ByVal numFmt As String) As Long
     Dim cnt As Long
     Dim ax As Axis
     Dim s As Series
@@ -778,44 +809,40 @@ Private Function FormatChartNumbers(ch As Chart, ByVal NUMFMT As String) As Long
     
     ' Axes tick labels
     For Each ax In ch.Axes
-        ax.TickLabels.numberFormat = NUMFMT
+        ax.TickLabels.numberFormat = numFmt
         If Err.Number = 0 Then cnt = cnt + 1 Else Err.Clear
     Next ax
     
     ' Data labels for all series (works for normal & pivot charts)
     For Each s In ch.FullSeriesCollection
         If s.HasDataLabels Then
-            s.DataLabels.numberFormat = NUMFMT
+            s.DataLabels.numberFormat = numFmt
             If Err.Number = 0 Then cnt = cnt + 1 Else Err.Clear
         End If
     Next s
-    
-    ' Chart-level selection fallback (rarely needed, safe no-op if unsupported)
-    ch.ChartArea.Format.TextFrame2.TextRange.ParagraphFormat
-    ' (no number format at chart area level)
     
     On Error GoTo 0
     FormatChartNumbers = cnt
 End Function
 
-Private Function HandleShapeNumberFormat(Sh As Shape, ByVal NUMFMT As String) As Long
+Private Function HandleShapeNumberFormat(sh As Shape, ByVal numFmt As String) As Long
     Dim cnt As Long
     
     On Error Resume Next
     
     ' If the shape hosts a chart
-    If Sh.Type = msoChart Then
-        cnt = cnt + FormatChartNumbers(Sh.Chart, NUMFMT)
+    If sh.Type = msoChart Then
+        cnt = cnt + FormatChartNumbers(sh.Chart, numFmt)
     End If
     
     ' If the shape is a Form Control with a linked cell, format that cell
     ' (Some shapes expose ControlFormat.LinkedCell)
     Dim linked As String
     linked = ""
-    linked = Sh.ControlFormat.LinkedCell
+    linked = sh.ControlFormat.LinkedCell
     If Err.Number = 0 Then
         If Len(linked) > 0 Then
-            Range(linked).numberFormat = NUMFMT
+            Range(linked).numberFormat = numFmt
             cnt = cnt + 1
         End If
     Else
@@ -830,4 +857,35 @@ Private Function HandleShapeNumberFormat(Sh As Shape, ByVal NUMFMT As String) As
     HandleShapeNumberFormat = cnt
 End Function
 
+Sub ApplyOkabeItoTheme(control As IRibbonControl)
 
+    Dim theme As Office.ThemeColorScheme
+    
+    Set theme = ActiveWorkbook.theme.ThemeColorScheme
+
+    With theme
+    
+        ' Dark / Light
+        .Colors(msoThemeDark1).RGB = RGB(0, 0, 0)
+        .Colors(msoThemeLight1).RGB = RGB(255, 255, 255)
+        
+        .Colors(msoThemeDark2).RGB = RGB(60, 60, 60)
+        .Colors(msoThemeLight2).RGB = RGB(242, 242, 242)
+
+        ' Accent colours
+        .Colors(msoThemeAccent1).RGB = RGB(0, 114, 178)     ' Blue
+        .Colors(msoThemeAccent2).RGB = RGB(230, 159, 0)     ' Orange
+        .Colors(msoThemeAccent3).RGB = RGB(0, 158, 115)     ' Bluish Green
+        .Colors(msoThemeAccent4).RGB = RGB(204, 121, 167)   ' Reddish Purple
+        .Colors(msoThemeAccent5).RGB = RGB(86, 180, 233)    ' Sky Blue
+        .Colors(msoThemeAccent6).RGB = RGB(213, 94, 0)      ' Vermillion
+
+        ' Hyperlinks
+        .Colors(msoThemeHyperlink).RGB = RGB(0, 114, 178)
+        .Colors(msoThemeFollowedHyperlink).RGB = RGB(204, 121, 167)
+
+    End With
+
+    MsgBox "Okabe-Ito colour theme applied.", vbInformation
+
+End Sub

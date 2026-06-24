@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmTextTools 
    Caption         =   "Text Editing Tools"
-   ClientHeight    =   8670.001
+   ClientHeight    =   8664.001
    ClientLeft      =   120
    ClientTop       =   465
    ClientWidth     =   6345
@@ -104,7 +104,7 @@ Private Sub cmdOK_Click()
             End If
 
         ' ------------------------------
-        ' ?? Insert Tab (future)
+        ' ?? Insert Tab
         ' ------------------------------
         Case 2 ' Insert Tab
             Dim insertText As String
