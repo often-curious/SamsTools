@@ -65,7 +65,7 @@ A step-by-step guide to installing **Sam's Tools** in Excel:
 5. **Add Sam's Tools**:
    - Click **Add New** in the add-ins window.
    - Navigate to the folder where you saved the Sam's Tools `.xlam` file, select it, and click **OK**.
-   Note: if you have issues adding the tool you might need to change the permissions of the file in the file explorer - navigate to the file and right click on it and select 'Properties' from the menu. In the Properties dialoge box, at the bottom there is a section called 'Security:' with a checkbox that says 'Unblock'. You need to select this and click Apply to enable Excel to add the file.
+   - Note: if you have issues adding the tool you might need to change the permissions of the file in the file explorer - navigate to the file and right click on it and select 'Properties' from the menu. In the Properties dialoge box, at the bottom there is a section called 'Security:' with a checkbox that says 'Unblock'. You need to select this and click Apply to enable Excel to add the file.
 6. **Complete Installation**:
    - The Sam's Tools tab should now appear in the Excel ribbon, confirming successful installation.
 
