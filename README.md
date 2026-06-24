@@ -37,7 +37,7 @@ Below are some key features, though not all are listed.
 |![Formula Extras](assets/features/FormulaExtras.jpg)    |Formula Extras          |Tidy up formulas and make them formatted better so they are easy to read, remove broken names and load some custom Lambdas to the name manager.  |
 |![Sheet Extras](assets/features/SheetExtras.jpg)    |Sheet Extras          |Basic excel sheet formatting setup for each new sheet, plus quick insert the sheet name, and sequential numbers/letters to create an index, or insert/delete x number of rows which can be helpful for tidying up messy data.   |
 |![Issues](assets/features/Issues.jpg)    |Issues          |Create an issue log to capture and review any problems in a model, plus quick link to wrap any formulas with an iferror that returns either blank or zero.   |
-|![Charts](assets/features/Charts.jpg)    |Charts          |   |
+|![Charts](assets/features/Charts.jpg)    |Charts          |Quickly format charts to make them easier to read, copy chart formatting and add templates such as a vertical waterfall chart.  |
 |![Lock / Unlock](assets/features/LockUnlock.jpg)    |Lock/Unlock Sheets          |Add protection to sheets and create a custom password that you can use to lock and unlock sheets or entire workbooks. The main button is a toggle that quickly locks and unlocks the active sheet.   |
 |![Mail](assets/features/Mail.jpg)    |Mail          |Send only the selected sheets (rather than Excel's default of the entire workbook), or select to send sheets as values if you only need to share the output from a sheet.  |
 |![Hide / Unhide](assets/features/HideUnhide.jpg)    |Hide/Unhide          |Unhide all hidden rows & columns on the active sheet (including grouped cells), plus hide or unhide selected sheets in the workbook.   |
@@ -65,6 +65,7 @@ A step-by-step guide to installing **Sam's Tools** in Excel:
 5. **Add Sam's Tools**:
    - Click **Add New** in the add-ins window.
    - Navigate to the folder where you saved the Sam's Tools `.xlam` file, select it, and click **OK**.
+   Note: if you have issues adding the tool you might need to change the permissions of the file in the file explorer - navigate to the file and right click on it and select 'Properties' from the menu. In the Properties dialoge box, at the bottom there is a section called 'Security:' with a checkbox that says 'Unblock'. You need to select this and click Apply to enable Excel to add the file.
 6. **Complete Installation**:
    - The Sam's Tools tab should now appear in the Excel ribbon, confirming successful installation.
 
