@@ -28,7 +28,7 @@ Below are some key features, though not all are listed.
 |![Edit Numbers](assets/features/EditNumbers.jpg)    |Edit Numbers          |Quickly multiply or divide numbers in the selected ranges, or convert absolute numbers (e.g. 50) into percentages (e.g. 50%), plus change the sign (e.g. +50 becomes -50).   |
 |![Model Formatting](assets/features/ModelFormatting.jpg)    |Model Formatting          |Preset model formats to quickly format cells as inputs, calculations, links, errors etc...   |
 |![Value Formatting](assets/features/ValueFormatting.jpg)    |Value Formatting          |Quickly format values as absolute, dollars, bps and +/- % - the thousands (k) and millions (m) buttons display the numbers in the respective formats without changing the underlying number (e.g. 10000 = 10k). Plus create a custom format that you can quickly toggle too!    |
-|![Colour Formatting](assets/features/ColourFormatting.jpg)    |Colour Formatting          |Pre-define your key brand colour and set them as 1, 2, or 3 (this will let you apply the brand formatting to any cell, table or chart selected and needs to be configured in the 'Formatting Extras' menu) you can also make the selected cell/object bighter or darker, format cell outlines white, and pick colours from selected cells.  |
+|![Colour Formatting](assets/features/ColourFormatting.jpg)    |Colour Formatting          |Pre-define your key brand colours and set them as 1, 2, or 3 (this will let you apply the brand formatting to any cell, table or chart selected and needs to be configured in the 'Formatting Extras' menu) you can also make the selected cell/object bighter or darker, format cell outlines white, and pick colours from selected cells.  |
 |![Formatting Extras](assets/features/FormattingExtras.jpg)    |Formatting Extras          |The menu includes functions such as setting the brand colours, converting merged cells to centre across, quick formatting pivot tables and change positions of any cell, range or object.  |
 |![Trace Precedents](assets/features/TracePrecedents.jpg)    |Trace Precedents          |A more insightful approach to auditing formulas to see which cells precede (or are inputs to) the outcome.   |
 |![Trace Dependents](assets/features/TraceDependents.jpg)    |Trace Dependents          |A more insightful approach to auditing formulas to see which cells depend on (or use the selected cell as inputs) for their outcome.   |
@@ -95,13 +95,6 @@ Always keep backups of important files.
 ## How You Can Contribute
 
 Bug reports, feature requests, and suggestions are welcome.
-
-Please submit an issue through GitHub and include:
-- Excel version
-- Operating system
-- Steps to reproduce the issue
-- Screenshots (if applicable)
-
 While this is a hobby project and responses may not be immediate, I will try review all submissions.
 
 ## How to Develop Your Own
@@ -119,7 +112,7 @@ You have three alternatives based on your skill level:
 ## How to Edit the Code
 To edit the macros and custom functionality within the `.xlam` file, follow these steps:
 
-1. **Enable the Developer Tab in the Ribbon**: If you don't already have the Developer tab visible, activate it by following [this guide](https://support.microsoft.com/en-us/office/show-the-developer-tab-in-word-e356706f-1891-4bb8-8d72-f57a51146792).
+1. **Enable the Developer Tab in the Ribbon**: If you don't already have the Developer tab visible, activate it by following [this guide](https://support.microsoft.com/en-us/office/add-ins/show-the-developer-tab).
 
 2. **Access the VBA Editor**: Click on the `Developer` tab, then click on `Visual Basic` to open the VBA editor.
 
@@ -130,13 +123,6 @@ To edit the macros and custom functionality within the `.xlam` file, follow thes
      - You can create custom forms (dialog boxes) that interact with the user. Forms contain controls like buttons, text fields, and checkboxes to gather user input or perform specific tasks.
     
 4. **Edit the Ribbon:** Download the [Office RibbonX Editor](https://github.com/fernandreu/office-ribbonx-editor) to edit the ribbon
-
-### Additional Resources
-- [VBA Documentation](https://docs.microsoft.com/en-us/office/vba/api/overview/excel) – Microsoft's official documentation for Excel VBA.
-- [StackOverflow Excel VBA](https://stackoverflow.com/search?q=excel-vba) – For questions and community support related to Excel VBA.
-
-## Other Amazing Open Source Tools
-- [Office Fluent UI Identifiers](https://github.com/OfficeDev/office-fluent-ui-command-identifiers): A great resource for finding identifiers to make the add-in look seamless.
 
 ## Support More of This
 If you love these tools and want to support a few of the late nights I've had building them, feel free to contribute to buying me a coffee...
