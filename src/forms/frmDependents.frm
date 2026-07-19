@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmDependents
    ClientHeight    =   3495
    ClientLeft      =   105
    ClientTop       =   450
-   ClientWidth     =   5610
+   ClientWidth     =   8970.001
    OleObjectBlob   =   "frmDependents.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -20,9 +20,9 @@ Option Explicit
 Private Const FORM_PADDING As Long = 5        ' Consistent padding around all edges
 
 ' Column width constants
-Private Const COLUMN_WIDTH_ADDRESS As Long = 150
+Private Const COLUMN_WIDTH_ADDRESS As Long = 250
 Private Const COLUMN_WIDTH_VALUE As Long = 75
-Private Const COLUMN_WIDTH_FORMULA As Long = 150
+Private Const COLUMN_WIDTH_FORMULA As Long = 200
 
 ' Control spacing constants
 Private Const CONTROL_SPACING As Long = 15     ' Vertical space between controls

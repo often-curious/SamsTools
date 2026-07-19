@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmPrecedents
    ClientHeight    =   4425
    ClientLeft      =   105
    ClientTop       =   450
-   ClientWidth     =   6525
+   ClientWidth     =   10260
    OleObjectBlob   =   "frmPrecedents.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -20,9 +20,9 @@ Option Explicit
 Private Const FORM_PADDING As Long = 5        ' Consistent padding around all edges
 
 ' Column width constants
-Private Const COLUMN_WIDTH_ADDRESS As Long = 150
+Private Const COLUMN_WIDTH_ADDRESS As Long = 250
 Private Const COLUMN_WIDTH_VALUE As Long = 75
-Private Const COLUMN_WIDTH_FORMULA As Long = 150
+Private Const COLUMN_WIDTH_FORMULA As Long = 200
 
 ' Control spacing constants
 Private Const CONTROL_SPACING As Long = 15     ' Vertical space between controls
@@ -98,6 +98,8 @@ Private Sub UserForm_Initialize()
         .BackColor = RGB(240, 240, 240)
         .Locked = True
         .MultiLine = True
+        .WordWrap = False
+        .ScrollBars = fmScrollBarsHorizontal
         .Font.SIZE = 10
     End With
     

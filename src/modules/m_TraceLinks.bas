@@ -2,7 +2,30 @@ Attribute VB_Name = "m_TraceLinks"
 Option Explicit
 
 Private Function fullAddress(inCell As Range) As String
-    fullAddress = inCell.Address(External:=True)
+    fullAddress = inCell.address(External:=True)
+End Function
+
+Private Function displayAddress(ByVal inCell As Range, ByVal baseCell As Range) As String
+
+    Dim address As String
+    Dim workbookName As String
+    
+    'Get the full external address
+    address = inCell.address(External:=True)
+    
+    'Get workbook name
+    workbookName = inCell.Parent.Parent.Name
+    
+    'Remove workbook name if same workbook as base cell
+    If inCell.Parent.Parent Is baseCell.Parent.Parent Then
+        address = Replace(address, "[" & workbookName & "]", "")
+    End If
+    
+    'Remove unnecessary apostrophe before !
+    address = Replace(address, "'!", "!")
+    
+    displayAddress = address
+
 End Function
 
 Public Sub ShowTracePrecedents(control As IRibbonControl)
@@ -39,7 +62,7 @@ Public Sub ShowTracePrecedents(control As IRibbonControl)
         For Each cell In selectedRange
             .lstPrecedents.AddItem
             With .lstPrecedents
-                .List(.ListCount - 1, 0) = cell.Worksheet.Name & "!" & cell.Address
+                .List(.ListCount - 1, 0) = displayAddress(cell, selectedRange.Cells(1, 1))
                 .List(.ListCount - 1, 1) = GetCellValueAsString(cell)
                 .List(.ListCount - 1, 2) = cell.formula
             End With
@@ -67,7 +90,7 @@ Public Sub ShowTracePrecedents(control As IRibbonControl)
                     If Not precedentRange Is Nothing Then
                         .lstPrecedents.AddItem
                         With .lstPrecedents
-                            .List(.ListCount - 1, 0) = INDENT_CHAR & precedentAddress
+                            .List(.ListCount - 1, 0) = INDENT_CHAR & displayAddress(precedentRange, selectedRange.Cells(1, 1))
                             .List(.ListCount - 1, 1) = GetCellValueAsString(precedentRange)
                             .List(.ListCount - 1, 2) = precedentRange.formula
                         End With
@@ -211,7 +234,7 @@ Public Sub ShowTraceDependents(control As IRibbonControl)
         For Each cell In selectedRange
             .lstDependents.AddItem
             With .lstDependents
-                .List(.ListCount - 1, 0) = cell.Worksheet.Name & "!" & cell.Address
+                .List(.ListCount - 1, 0) = displayAddress(cell, selectedRange.Cells(1, 1))
                 .List(.ListCount - 1, 1) = GetCellValueAsString(cell)
                 .List(.ListCount - 1, 2) = cell.formula
             End With
@@ -239,7 +262,7 @@ Public Sub ShowTraceDependents(control As IRibbonControl)
                     If Not dependentRange Is Nothing Then
                         .lstDependents.AddItem
                         With .lstDependents
-                            .List(.ListCount - 1, 0) = INDENT_CHAR & dependentAddress
+                            .List(.ListCount - 1, 0) = INDENT_CHAR & displayAddress(dependentRange, selectedRange.Cells(1, 1))
                             .List(.ListCount - 1, 1) = GetCellValueAsString(dependentRange)
                             .List(.ListCount - 1, 2) = dependentRange.formula
                         End With

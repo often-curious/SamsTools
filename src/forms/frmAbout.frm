@@ -1,7 +1,7 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmAbout 
    Caption         =   "Sam's Tools"
-   ClientHeight    =   4008
+   ClientHeight    =   4005
    ClientLeft      =   105
    ClientTop       =   435
    ClientWidth     =   5010
@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Const SamsToolsVersion As String = "2026.06"
+Const SamsToolsVersion As String = "2026.07"
 
 Private Sub btnOK_Click()
     Unload Me

@@ -135,13 +135,13 @@ Next
 End Sub
 
 Sub GetColorCodeFromCellFill(control As IRibbonControl)
-
-'Create variables hold the color data
 Dim fillColor As Long
 Dim r As Integer
 Dim g As Integer
 Dim b As Integer
 Dim Hex As String
+Dim outputText As String
+Dim clipboard As Object
 
 'Get the fill color
 fillColor = ActiveCell.Interior.color
@@ -154,198 +154,187 @@ b = (fillColor \ 65536) Mod 256
 'Convert fill color to Hex
 Hex = "#" & Application.WorksheetFunction.Dec2Hex(fillColor)
 
-'Display fill color codes
-MsgBox "Color codes for active cell" & vbNewLine & _
-    "R:" & r & ", G:" & g & ", B:" & b & vbNewLine & _
-    "Hex: " & Hex, Title:="Color Codes"
+'Build the output text
+outputText = "R:" & r & ", G:" & g & ", B:" & b & vbNewLine & "Hex: " & Hex
 
+'Copy to clipboard using MSForms.DataObject
+Set clipboard = New MSForms.DataObject
+clipboard.SetText outputText
+clipboard.PutInClipboard
+
+'Display fill color codes and confirm copy
+MsgBox "Color codes for active cell (copied to clipboard)" & vbNewLine & _
+    outputText, Title:="Color Codes"
 End Sub
 
+Private Sub ToggleNumberFormat(ByVal formats As Variant)
 
-Sub FormatMetres(control As IRibbonControl)
+    On Error GoTo ErrorHandler
+
     Dim cellranges As Range
-    Dim formats As Variant
-    Dim i As Integer, foundIndex As Integer
-    Dim currentFormat As String, nextFormat As String
-
-    Set cellranges = Application.Selection
-    currentFormat = Application.ActiveCell.numberFormat
-
-    formats = Array( _
-        "#,##0.0""m³"";[Red](#,##0.0""m³"");-", _
-        "[Red]#,##0.0""m³"";(#,##0.0""m³"");-", _
-        "+#,##0.0""m³"";[Red]-#,##0.0""m³"";-", _
-        "[Red]+#,##0.0""m³"";-#,##0.0""m³"";-", _
-        "#,##0.0""m²"";[Red](#,##0.0""m²"");-", _
-        "[Red]#,##0.0""m²"";(#,##0.0""m²"");-", _
-        "+#,##0.0""m²"";[Red]-#,##0.0""m²"";-", _
-        "[Red]+#,##0.0""m²"";-#,##0.0""m²"";-" _
-    )
-
-    foundIndex = -1
-    For i = LBound(formats) To UBound(formats)
-        If currentFormat = formats(i) Then
-            foundIndex = i
-            Exit For
-        End If
-    Next i
-
-    If foundIndex >= 0 Then
-        nextFormat = formats((foundIndex + 1) Mod (UBound(formats) + 1))
-    Else
-        nextFormat = formats(0)
+    Dim currentFormat As String
+    Dim i As Long
+    
+    If TypeName(Application.Selection) <> "Range" Then
+        MsgBox "Please select cells before applying a format.", vbInformation
+        Exit Sub
     End If
+    
+    Set cellranges = Application.Selection
+    
+    If IsNull(cellranges.numberFormat) Then
+        currentFormat = ""
+    Else
+        currentFormat = cellranges.numberFormat
+    End If
+    
+    For i = LBound(formats) To UBound(formats)
+        
+        If currentFormat = formats(i) Then
+            
+            If i = UBound(formats) Then
+                cellranges.numberFormat = formats(LBound(formats))
+            Else
+                cellranges.numberFormat = formats(i + 1)
+            End If
+            
+            Exit Sub
+            
+        End If
+        
+    Next i
+    
+    cellranges.numberFormat = formats(LBound(formats))
 
-    On Error Resume Next
-    cellranges.numberFormat = nextFormat
-    On Error GoTo 0
+    Exit Sub
+
+ErrorHandler:
+
+    MsgBox "Unable to apply number format." & vbCrLf & _
+           Err.Description, vbExclamation, "Sam's Tools"
+
 End Sub
 
 Sub FormatThousands(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "#,##0.0,;[Red](#,##0.0,);-" Then
-cellranges.numberFormat = "[Red]#,##0.0,;(#,##0.0,);-"
-ElseIf cellranges.numberFormat = "[Red]#,##0.0,;(#,##0.0,);-" Then
-cellranges.numberFormat = "+#,##0.0,;[Red]-#,##0.0,;-"
-ElseIf cellranges.numberFormat = "+#,##0.0,;[Red]-#,##0.0,;-" Then
-cellranges.numberFormat = "[Red]+#,##0.0,;-#,##0.0,;-"
 
-ElseIf cellranges.numberFormat = "[Red]+#,##0.0,;-#,##0.0,;-" Then
-cellranges.numberFormat = "#,##0.0,""k"";[Red](#,##0.0,""k"");-"
-ElseIf cellranges.numberFormat = "#,##0.0,""k"";[Red](#,##0.0,""k"");-" Then
-cellranges.numberFormat = "[Red]#,##0.0,""k"";(#,##0.0,""k"");-"
-ElseIf cellranges.numberFormat = "[Red]#,##0.0,""k"";(#,##0.0,""k"");-" Then
-cellranges.numberFormat = "+#,##0.0,""k"";[Red]-#,##0.0,""k"";-"
-ElseIf cellranges.numberFormat = "+#,##0.0,""k"";[Red]-#,##0.0,""k"";-" Then
-cellranges.numberFormat = "[Red]+#,##0.0,""k"";-#,##0.0,""k"";-"
-Else
-cellranges.numberFormat = "#,##0.0,;[Red](#,##0.0,);-"
-End If
+    ToggleNumberFormat Array( _
+        "#,##0.0,;[Red](#,##0.0,);-", _
+        "[Red]#,##0.0,;(#,##0.0,);-", _
+        "+#,##0.0,;[Red]-#,##0.0,;-", _
+        "[Red]+#,##0.0,;-#,##0.0,;-", _
+        "#,##0.0,""k"";[Red](#,##0.0,""k"");-", _
+        "[Red]#,##0.0,""k"";(#,##0.0,""k"");-", _
+        "+#,##0.0,""k"";[Red]-#,##0.0,""k"";-", _
+        "[Red]+#,##0.0,""k"";-#,##0.0,""k"";-", _
+        ChrW(9650) & "#,##0.0,""k"";[Red]" & ChrW(9660) & "#,##0.0,""k"";"" - """, _
+        "[Red]" & ChrW(9650) & "#,##0.0,""k"";" & ChrW(9660) & "#,##0.0,""k"";"" - """ _
+    )
+
 End Sub
 
 Sub FormatThousandsDollars(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "$#,##0.0,;[Red]($#,##0.0,);-" Then
-cellranges.numberFormat = "[Red]$#,##0.0,;($#,##0.0,);-"
-ElseIf cellranges.numberFormat = "[Red]$#,##0.0,;($#,##0.0,);-" Then
-cellranges.numberFormat = "+$#,##0.0,;[Red]-$#,##0.0,;-"
-ElseIf cellranges.numberFormat = "+$#,##0.0,;[Red]-$#,##0.0,;-" Then
-cellranges.numberFormat = "[Red]+$#,##0.0,;-$#,##0.0,;-"
 
-ElseIf cellranges.numberFormat = "[Red]+$#,##0.0,;-$#,##0.0,;-" Then
-cellranges.numberFormat = "$#,##0.0,""k"";[Red]($#,##0.0,""k"");-"
-ElseIf cellranges.numberFormat = "$#,##0.0,""k"";[Red]($#,##0.0,""k"");-" Then
-cellranges.numberFormat = "[Red]$#,##0.0,""k"";($#,##0.0,""k"");-"
-ElseIf cellranges.numberFormat = "[Red]$#,##0.0,""k"";($#,##0.0,""k"");-" Then
-cellranges.numberFormat = "+$#,##0.0,""k"";[Red]-$#,##0.0,""k"";-"
-ElseIf cellranges.numberFormat = "+$#,##0.0,""k"";[Red]-$#,##0.0,""k"";-" Then
-cellranges.numberFormat = "[Red]+$#,##0.0,""k"";-$#,##0.0,""k"";-"
-Else
-cellranges.numberFormat = "$#,##0.0,;[Red]($#,##0.0,);-"
-End If
+    ToggleNumberFormat Array( _
+        "$#,##0.0,;[Red]($#,##0.0,);-", _
+        "[Red]$#,##0.0,;($#,##0.0,);-", _
+        "+$#,##0.0,;[Red]-$#,##0.0,;-", _
+        "[Red]+$#,##0.0,;-$#,##0.0,;-", _
+        "$#,##0.0,""k"";[Red]($#,##0.0,""k"");-", _
+        "[Red]$#,##0.0,""k"";($#,##0.0,""k"");-", _
+        "+$#,##0.0,""k"";[Red]-$#,##0.0,""k"";-", _
+        "[Red]+$#,##0.0,""k"";-$#,##0.0,""k"";-", _
+        ChrW(9650) & "$#,##0.0,""k"";[Red]" & ChrW(9660) & "$#,##0.0,""k"";"" - """, _
+        "[Red]" & ChrW(9650) & "$#,##0.0,""k"";" & ChrW(9660) & "$#,##0.0,""k"";"" - """ _
+    )
+
 End Sub
 
 Sub FormatMillions(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "#,##0.0,,;[Red](#,##0.0,,);-" Then
-cellranges.numberFormat = "[Red]#,##0.0,,;(#,##0.0,,);-"
-ElseIf cellranges.numberFormat = "[Red]#,##0.0,,;(#,##0.0,,);-" Then
-cellranges.numberFormat = "+#,##0.0,,;[Red]-#,##0.0,,;-"
-ElseIf cellranges.numberFormat = "+#,##0.0,,;[Red]-#,##0.0,,;-" Then
-cellranges.numberFormat = "[Red]+#,##0.0,,;-#,##0.0,,;-"
 
-ElseIf cellranges.numberFormat = "[Red]+#,##0.0,,;-#,##0.0,,;-" Then
-cellranges.numberFormat = "#,##0.0,,""m"";[Red](#,##0.0,,""m"");-"
-ElseIf cellranges.numberFormat = "#,##0.0,,""m"";[Red](#,##0.0,,""m"");-" Then
-cellranges.numberFormat = "[Red]#,##0.0,,""m"";(#,##0.0,,""m"");-"
-ElseIf cellranges.numberFormat = "[Red]#,##0.0,,""m"";(#,##0.0,,""m"");-" Then
-cellranges.numberFormat = "+#,##0.0,,""m"";[Red]-#,##0.0,,""m"";-"
-ElseIf cellranges.numberFormat = "+#,##0.0,,""m"";[Red]-#,##0.0,,""m"";-" Then
-cellranges.numberFormat = "[Red]+#,##0.0,,""m"";-#,##0.0,,""m"";-"
-Else
-cellranges.numberFormat = "#,##0.0,,;[Red](#,##0.0,,);-"
-End If
+    ToggleNumberFormat Array( _
+        "#,##0.0,,;[Red](#,##0.0,,);-", _
+        "[Red]#,##0.0,,;(#,##0.0,,);-", _
+        "+#,##0.0,,;[Red]-#,##0.0,,;-", _
+        "[Red]+#,##0.0,,;-#,##0.0,,;-", _
+        "#,##0.0,,""m"";[Red](#,##0.0,,""m"");-", _
+        "[Red]#,##0.0,,""m"";(#,##0.0,,""m"");-", _
+        "+#,##0.0,,""m"";[Red]-#,##0.0,,""m"";-", _
+        "[Red]+#,##0.0,,""m"";-#,##0.0,,""m"";-", _
+        ChrW(9650) & "#,##0.0,,""m"";[Red]" & ChrW(9660) & "#,##0.0,,""m"";"" - """, _
+        "[Red]" & ChrW(9650) & "#,##0.0,,""m"";" & ChrW(9660) & "#,##0.0,,""m"";"" - """ _
+    )
+
 End Sub
 
 Sub FormatMillionsDollars(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "$#,##0.0,,;[Red]($#,##0.0,,);-" Then
-cellranges.numberFormat = "[Red]$#,##0.0,,;($#,##0.0,,);-"
-ElseIf cellranges.numberFormat = "[Red]$#,##0.0,,;($#,##0.0,,);-" Then
-cellranges.numberFormat = "+$#,##0.0,,;[Red]-$#,##0.0,,;-"
-ElseIf cellranges.numberFormat = "+$#,##0.0,,;[Red]-$#,##0.0,,;-" Then
-cellranges.numberFormat = "[Red]+$#,##0.0,,;-$#,##0.0,,;-"
 
-ElseIf cellranges.numberFormat = "[Red]+$#,##0.0,,;-$#,##0.0,,;-" Then
-cellranges.numberFormat = "$#,##0.0,,""m"";[Red]($#,##0.0,,""m"");-"
-ElseIf cellranges.numberFormat = "$#,##0.0,,""m"";[Red]($#,##0.0,,""m"");-" Then
-cellranges.numberFormat = "[Red]$#,##0.0,,""m"";($#,##0.0,,""m"");-"
-ElseIf cellranges.numberFormat = "[Red]$#,##0.0,,""m"";($#,##0.0,,""m"");-" Then
-cellranges.numberFormat = "+$#,##0.0,,""m"";[Red]-$#,##0.0,,""m"";-"
-ElseIf cellranges.numberFormat = "+$#,##0.0,,""m"";[Red]-$#,##0.0,,""m"";-" Then
-cellranges.numberFormat = "[Red]+$#,##0.0,,""m"";-$#,##0.0,,""m"";-"
-Else
-cellranges.numberFormat = "$#,##0.0,,;[Red]($#,##0.0,,);-"
-End If
+    ToggleNumberFormat Array( _
+        "$#,##0.0,,;[Red]($#,##0.0,,);-", _
+        "[Red]$#,##0.0,,;($#,##0.0,,);-", _
+        "+$#,##0.0,,;[Red]-$#,##0.0,,;-", _
+        "[Red]+$#,##0.0,,;-$#,##0.0,,;-", _
+        "$#,##0.0,,""m"";[Red]($#,##0.0,,""m"");-", _
+        "[Red]$#,##0.0,,""m"";($#,##0.0,,""m"");-", _
+        "+$#,##0.0,,""m"";[Red]-$#,##0.0,,""m"";-", _
+        "[Red]+$#,##0.0,,""m"";-$#,##0.0,,""m"";-", _
+        ChrW(9650) & "$#,##0.0,,""m"";[Red]" & ChrW(9660) & "$#,##0.0,,""m"";"" - """, _
+        "[Red]" & ChrW(9650) & "$#,##0.0,,""m"";" & ChrW(9660) & "$#,##0.0,,""m"";"" - """ _
+    )
+
 End Sub
 
 Sub FormatAccounting(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "#,##0;[Red](#,##0);-" Then
-cellranges.numberFormat = "[Red]#,##0;(#,##0);-"
-ElseIf cellranges.numberFormat = "[Red]#,##0;(#,##0);-" Then
-cellranges.numberFormat = "+#,##0;[Red]-#,##0;-"
-ElseIf cellranges.numberFormat = "+#,##0;[Red]-#,##0;-" Then
-cellranges.numberFormat = "[Red]+#,##0;-#,##0;-"
-Else
-cellranges.numberFormat = "#,##0;[Red](#,##0);-"
-End If
+
+    ToggleNumberFormat Array( _
+        "#,##0;[Red](#,##0);-", _
+        "[Red]#,##0;(#,##0);-", _
+        "+#,##0;[Red]-#,##0;-", _
+        "[Red]+#,##0;-#,##0;-", _
+        ChrW(9650) & "#,##0;[Red]" & ChrW(9660) & "#,##0;-", _
+        "[Red]" & ChrW(9650) & "#,##0;" & ChrW(9660) & "#,##0;-" _
+    )
+
 End Sub
 
 Sub FormatAccountingDollars(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "$#,##0;[Red]($#,##0);-" Then
-cellranges.numberFormat = "[Red]$#,##0;($#,##0);-"
-ElseIf cellranges.numberFormat = "[Red]$#,##0;($#,##0);-" Then
-cellranges.numberFormat = "+$#,##0;[Red]-$#,##0;-"
-ElseIf cellranges.numberFormat = "+$#,##0;[Red]-$#,##0;-" Then
-cellranges.numberFormat = "[Red]+$#,##0;-$#,##0;-"
-Else
-cellranges.numberFormat = "$#,##0;[Red]($#,##0);-"
-End If
+
+
+    ToggleNumberFormat Array( _
+        "$#,##0;[Red]($#,##0);-", _
+        "[Red]$#,##0;($#,##0);-", _
+        "+$#,##0;[Red]-$#,##0;-", _
+        "[Red]+$#,##0;-$#,##0;-", _
+        ChrW(9650) & "$#,##0;[Red]" & ChrW(9660) & "$#,##0;-", _
+        "[Red]" & ChrW(9650) & "$#,##0;" & ChrW(9660) & "$#,##0;-" _
+    )
+    
 End Sub
 
+
 Sub FormatBPS(control As IRibbonControl)
-Set cellranges = Application.Selection
-If cellranges.numberFormat = "+#,##0""bps"";[Red]-#,##0""bps""" Then
-cellranges.numberFormat = "[Red]+#,##0""bps"";-#,##0""bps"""
-ElseIf cellranges.numberFormat = "[Red]+#,##0""bps"";-#,##0""bps""" Then
-cellranges.numberFormat = "#,##0""bps"";[Red](#,##0)""bps"""
-ElseIf cellranges.numberFormat = "#,##0""bps"";[Red](#,##0)""bps""" Then
-cellranges.numberFormat = "[Red]#,##0""bps"";(#,##0)""bps"""
-Else
-cellranges.numberFormat = "+#,##0""bps"";[Red]-#,##0""bps"""
-End If
+    
+    ToggleNumberFormat Array( _
+        "+#,##0""bps"";[Red]-#,##0""bps""", _
+        "[Red]+#,##0""bps"";-#,##0""bps""", _
+        "#,##0""bps"";[Red](#,##0)""bps""", _
+        "[Red]#,##0""bps"";(#,##0)""bps""", _
+        ChrW(9650) & "#,##0""bps"";[Red]" & ChrW(9660) & "#,##0""bps"";"" - """, _
+        "[Red]" & ChrW(9650) & "#,##0""bps"";" & ChrW(9660) & "#,##0""bps"";"" - """ _
+    )
+    
 End Sub
+    
 
 Sub FormatPlusMinusPercent(control As IRibbonControl)
 
-    Dim cellranges As Range
-    Set cellranges = Application.Selection
-    
-    If cellranges.numberFormat = "+#,##0.0%;[Red]-#,##0.0%;"" - """ Then
-        cellranges.numberFormat = "[Red]+#,##0.0%;-#,##0.0%;"" - """
-    ElseIf cellranges.numberFormat = "[Red]+#,##0.0%;-#,##0.0%;"" - """ Then
-        cellranges.numberFormat = "#,##0.0%;[Red](#,##0.0%);"" - """
-    ElseIf cellranges.numberFormat = "#,##0.0%;[Red](#,##0.0%);"" - """ Then
-        cellranges.numberFormat = "[Red]#,##0.0%;(#,##0.0%);"" - """
-    ElseIf cellranges.numberFormat = "[Red]#,##0.0%;(#,##0.0%);"" - """ Then
-        cellranges.numberFormat = ChrW(8593) & "0%;[Red]" & ChrW(8595) & "0%;"" - """
-    ElseIf cellranges.numberFormat = ChrW(8593) & "0%;[Red]" & ChrW(8595) & "0%;"" - """ Then
-        cellranges.numberFormat = "[Red]" & ChrW(8593) & "0%;" & ChrW(8595) & "0%;"" - """
-    Else
-        cellranges.numberFormat = "+#,##0.0%;[Red]-#,##0.0%;"" - """
-    End If
+    ToggleNumberFormat Array( _
+        "+#,##0.0%;[Red]-#,##0.0%;"" - """, _
+        "[Red]+#,##0.0%;-#,##0.0%;"" - """, _
+        "#,##0.0%;[Red](#,##0.0%);"" - """, _
+        "[Red]#,##0.0%;(#,##0.0%);"" - """, _
+        ChrW(9650) & "#,##0.0%;[Red]" & ChrW(9660) & "#,##0.0%;"" - """, _
+        "[Red]" & ChrW(9650) & "#,##0.0%;" & ChrW(9660) & "#,##0.0%;"" - """ _
+    )
 
 End Sub
 
@@ -373,45 +362,35 @@ Public Sub Do_Cell_Model_Formatting()
 
     ' Apply number format and border to each cell
     For Each cellselected In cellranges
-        'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
         cellselected.BorderAround _
             LineStyle:=xlContinuous, _
             Weight:=xlThin, _
-            colorIndex:=15
+            color:=RGB(192, 192, 192)
     Next cellselected
 
     ' Conditional formatting & styling
-    If cellranges.Font.colorIndex = 5 And cellranges.Interior.colorIndex = 19 Then
-        cellranges.Interior.colorIndex = 0
+    If cellranges.Font.color = RGB(255, 255, 204) And cellranges.Interior.colorIndex = 19 Then
+        cellranges.Interior.color = RGB(0, 0, 0)
         cellranges.Font.colorIndex = 45
-        'ActiveWorkbook.Styles.Add Name:="Linked Cell", BasedOn:=ActiveCell
-        'cellranges.Style = "Linked Cell"
     
     ElseIf cellranges.Font.colorIndex = 45 Then
         cellranges.Interior.colorIndex = 15
         cellranges.Font.colorIndex = 10
         For Each cellselected In cellranges
-            'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
             cellselected.BorderAround _
                 LineStyle:=xlDouble, _
                 Weight:=xlThin, _
                 colorIndex:=16
         Next cellselected
         cellranges.numberFormat = "[Color10][=0]""Ok"";[Red]""Error"""
-        'ActiveWorkbook.Styles.Add Name:="Check Cell", BasedOn:=ActiveCell
-        'cellranges.Style = "Check Cell"
     
     ElseIf cellranges.Interior.colorIndex = 15 Then
-        cellranges.Interior.colorIndex = 0
-        cellranges.Font.colorIndex = 1
-        'ActiveWorkbook.Styles.Add Name:="Calculation", BasedOn:=ActiveCell
-        'cellranges.Style = "Calculation"
+        cellranges.Interior.color = RGB(255, 255, 255)
+        cellranges.Font.color = RGB(0, 0, 0)
     
     Else
-        cellranges.Interior.colorIndex = 19
-        cellranges.Font.colorIndex = 5
-        'ActiveWorkbook.Styles.Add Name:="Input", BasedOn:=ActiveCell
-        'cellranges.Style = "Input"
+        cellranges.Interior.color = RGB(255, 255, 204)
+        cellranges.Font.color = RGB(0, 0, 255)
     End If
 
     On Error GoTo 0 ' Turn off error bypassing
@@ -420,51 +399,27 @@ Public Sub Do_Cell_Model_Formatting()
     Application.EnableEvents = True
 End Sub
 
+
 Sub Apply_Input_Style(control As IRibbonControl)
-
     Dim cellranges As Range
-    Dim s As Style
 
+    On Error Resume Next
     Application.ScreenUpdating = False
     Application.EnableEvents = False
 
-    Set cellranges = Selection
+    Set cellranges = Application.Selection
+    
+    For Each cellselected In cellranges
+        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, color:=RGB(192, 192, 192)
+    Next cellselected
 
-    ' Get or create style
-    On Error Resume Next
-    Set s = ActiveWorkbook.Styles("Input")
-    On Error GoTo 0
+    cellranges.Interior.color = RGB(255, 255, 204)
+    cellranges.Font.color = RGB(0, 0, 255)
 
-    If s Is Nothing Then
-        Set s = ActiveWorkbook.Styles.Add("Input")
-    End If
-
-    ' Define style (no number formatting, no borders)
-    With s
-        .IncludeNumber = False
-        .IncludeFont = True
-        .IncludePatterns = True
-        .IncludeBorder = False
-        .IncludeAlignment = False
-        .IncludeProtection = False
-
-        .Interior.colorIndex = 19
-        .Font.colorIndex = 5
-    End With
-
-    ' Apply style
-    cellranges.Style = "Input"
-
-    ' Outline each cell
-    With cellranges.Borders
-        .LineStyle = xlContinuous
-        .Weight = xlThin
-        .colorIndex = 15
-    End With
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
-
+    On Error GoTo 0
 End Sub
 
 
@@ -478,15 +433,12 @@ Sub Apply_Linked_Style(control As IRibbonControl)
     Set cellranges = Application.Selection
     
     For Each cellselected In cellranges
-        'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, colorIndex:=15
+        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, color:=RGB(192, 192, 192)
     Next cellselected
 
-    'cellranges.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-    cellranges.Interior.colorIndex = 0
-    cellranges.Font.colorIndex = 45
-    'ActiveWorkbook.Styles.Add Name:="Linked Cell", BasedOn:=ActiveCell
-    'cellranges.Style = "Linked Cell"
+    cellranges.Interior.color = RGB(255, 242, 204)
+    cellranges.Font.color = RGB(204, 0, 0)
+
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -504,15 +456,12 @@ Sub Apply_Check_Style(control As IRibbonControl)
     Set cellranges = Application.Selection
 
     For Each cellselected In cellranges
-        'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-        cellselected.BorderAround LineStyle:=xlDouble, Weight:=xlThin, colorIndex:=16
+        cellselected.BorderAround LineStyle:=xlDouble, Weight:=xlThin, color:=RGB(192, 192, 192)
     Next cellselected
 
     cellranges.Interior.colorIndex = 15
     cellranges.Font.colorIndex = 10
     cellranges.numberFormat = "[Color10][=0]""Ok"";[Red]""Error"""
-    'ActiveWorkbook.Styles.Add Name:="Check Cell", BasedOn:=ActiveCell
-    'cellranges.Style = "Check Cell"
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -529,14 +478,53 @@ Sub Apply_Calculation_Style(control As IRibbonControl)
     Set cellranges = Application.Selection
 
     For Each cellselected In cellranges
-        'cellselected.NumberFormat = "#,##0.0;(#,##0.0);"" - """
-        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, colorIndex:=15
+        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, color:=RGB(192, 192, 192)
     Next cellselected
     
-    cellranges.Interior.colorIndex = 0
-    cellranges.Font.colorIndex = 1
-    'ActiveWorkbook.Styles.Add Name:="Calculation", BasedOn:=ActiveCell
-    'cellranges.Style = "Calculation"
+    cellranges.Interior.color = RGB(255, 255, 255)
+    cellranges.Font.color = RGB(0, 0, 0)
+
+    Application.ScreenUpdating = True
+    Application.EnableEvents = True
+    On Error GoTo 0
+End Sub
+
+Sub Apply_Linked_Calculation_Style(control As IRibbonControl)
+    Dim cellranges As Range
+
+    On Error Resume Next
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+
+    Set cellranges = Application.Selection
+
+    For Each cellselected In cellranges
+        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, color:=RGB(192, 192, 192)
+    Next cellselected
+    
+    cellranges.Interior.color = RGB(221, 235, 247)
+    cellranges.Font.color = RGB(0, 80, 215)
+
+    Application.ScreenUpdating = True
+    Application.EnableEvents = True
+    On Error GoTo 0
+End Sub
+
+Sub Apply_Unique_Calculation_Style(control As IRibbonControl)
+    Dim cellranges As Range
+
+    On Error Resume Next
+    Application.ScreenUpdating = False
+    Application.EnableEvents = False
+
+    Set cellranges = Application.Selection
+
+    For Each cellselected In cellranges
+        cellselected.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, color:=RGB(192, 192, 192)
+    Next cellselected
+    
+    cellranges.Interior.color = RGB(252, 228, 214)
+    cellranges.Font.color = RGB(204, 0, 0)
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -562,9 +550,6 @@ Sub Apply_NotUsed_Style(control As IRibbonControl)
 
     cellranges.Font.colorIndex = 1 ' Black font
 
-    ActiveWorkbook.Styles.Add Name:="Not Used", BasedOn:=ActiveCell
-    cellranges.Style = "Not Used"
-
     Application.ScreenUpdating = True
     Application.EnableEvents = True
 End Sub
@@ -578,19 +563,12 @@ Sub Apply_Header_Style(control As IRibbonControl)
 
     Set cellranges = Application.Selection
 
-    For Each cellselected In cellranges
-        With cellselected.Interior
+        With cellranges.Interior
             .color = RGB(1, 57, 118)
         End With
-    Next cellselected
 
-    cellranges.numberFormat = "#,##0.0;(#,##0.0);"" - """
-    cellranges.Font.Name = "Arial"
     cellranges.Font.Bold = True
     cellranges.Font.colorIndex = 2 ' White font
-
-    ActiveWorkbook.Styles.Add Name:="Header", BasedOn:=ActiveCell
-    cellranges.Style = "Header"
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -605,18 +583,12 @@ Sub Apply_SubHeader_Style(control As IRibbonControl)
 
     Set cellranges = Application.Selection
 
-    For Each cellselected In cellranges
-        With cellselected.Interior
+        With cellranges.Interior
             .color = RGB(232, 232, 232)
         End With
-    Next cellselected
 
-    cellranges.numberFormat = "#,##0.0;(#,##0.0);"" - """
-    cellranges.Font.Name = "Arial"
+    cellranges.Font.Bold = True
     cellranges.Font.colorIndex = 1 ' Black font
-
-    ActiveWorkbook.Styles.Add Name:="Subheader", BasedOn:=ActiveCell
-    cellranges.Style = "Subheader"
 
     Application.ScreenUpdating = True
     Application.EnableEvents = True
@@ -887,5 +859,97 @@ Sub ApplyOkabeItoTheme(control As IRibbonControl)
     End With
 
     MsgBox "Okabe-Ito colour theme applied.", vbInformation
+
+End Sub
+
+
+Sub ReplaceFormattingByColourAndFormat(control As IRibbonControl)
+
+    Dim ws As Worksheet
+    Dim RefCell As Range
+    Dim SourceCell As Range
+    Dim cell As Range
+    Dim MatchRange As Range
+
+    Dim RefColour As Long
+    Dim RefNumberFormat As String
+    Dim UserChoice As VbMsgBoxResult
+
+    ' Ensure exactly one reference cell selected
+    If Selection.Cells.count <> 1 Then
+        MsgBox "Please select a single reference cell first.", vbExclamation
+        Exit Sub
+    End If
+
+    Set RefCell = Selection
+    Set ws = RefCell.Worksheet
+
+    RefColour = RefCell.Interior.color
+    RefNumberFormat = RefCell.numberFormat
+
+    ' Find matching cells
+    For Each cell In ws.UsedRange
+
+        If cell.Interior.color = RefColour _
+           And cell.numberFormat = RefNumberFormat Then
+
+            If MatchRange Is Nothing Then
+                Set MatchRange = cell
+            Else
+                Set MatchRange = Union(MatchRange, cell)
+            End If
+
+        End If
+
+    Next cell
+
+    If MatchRange Is Nothing Then
+        MsgBox "No matching cells found.", vbInformation
+        Exit Sub
+    End If
+
+    MsgBox MatchRange.Cells.count & _
+           " matching cells found." & vbCrLf & vbCrLf & _
+           "Select the source cell containing the desired formatting.", _
+           vbInformation
+
+    On Error Resume Next
+    Set SourceCell = Application.InputBox( _
+        Prompt:="Select the source cell", _
+        Title:="Select Format Source", _
+        Type:=8)
+    On Error GoTo 0
+
+    If SourceCell Is Nothing Then Exit Sub
+
+    ' Ask user what to copy
+    UserChoice = MsgBox( _
+        "Yes = Copy ALL formatting" & vbCrLf & _
+        "No = Copy VALUE formatting only (Number Format)" & vbCrLf & _
+        "Cancel = Exit", _
+        vbYesNoCancel + vbQuestion, _
+        "Formatting Options")
+
+    If UserChoice = vbCancel Then Exit Sub
+
+    Application.ScreenUpdating = False
+
+    If UserChoice = vbYes Then
+
+        ' Copy all formatting
+        SourceCell.Copy
+        MatchRange.PasteSpecial Paste:=xlPasteFormats
+        Application.CutCopyMode = False
+
+    ElseIf UserChoice = vbNo Then
+
+        ' Copy Number Format only
+        MatchRange.numberFormat = SourceCell.numberFormat
+
+    End If
+
+    Application.ScreenUpdating = True
+
+    MsgBox "Updated " & MatchRange.Cells.count & " cells.", vbInformation
 
 End Sub
