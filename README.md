@@ -8,7 +8,7 @@ To install on Windows (Mac not supported):
 - Download the `.xlam` in the [releases page](https://github.com/often-curious/SamsTools/tree/main/releases)
 - **Important!** Follow the [installation instructions](https://github.com/often-curious/SamsTools?tab=readme-ov-file#installing--uninstalling)
 
-## Why I Created This
+## Why I created this?
 
 As a finance nerd who spends hours in Excel, I found I was constantly repeating some actions over and over. I looked into VBA as a way to automate these actions and over time started building a toolbar so I could access them quickly. I also saw other examples across the internet of cool ideas for macros that help make Excel life easy, and I've incorporated these ideas over the years too.
 
@@ -47,9 +47,9 @@ Below are some key features, though not all are listed.
 |    |Right-click menu          |Have also added some other quick formatting functions to the right-click menu to make it easy for format commonly used types.   |
 |    |F1 Key Disabled          |By default the F1 key is also disabled so no more chances of accidentially pressing it and no need to remove the key from my keyboard (which I had previously done on a few occasions).   |
 
-## Installing & Uninstalling
+## Installing & uninstalling
 
-### Installation Instructions
+### Installation instructions
 
 A step-by-step guide to installing **Sam's Tools** in Excel:
 
@@ -70,7 +70,7 @@ A step-by-step guide to installing **Sam's Tools** in Excel:
    - The Sam's Tools tab should now appear in the Excel ribbon, confirming successful installation.
 
 
-### Uninstallation Instructions
+### Uninstallation instructions
 
 A step-by-step guide to uninstalling **Sam's Tools**:
 
@@ -92,12 +92,12 @@ While I use these tools regularly in professional environments, no warranty is p
 
 Always keep backups of important files.
 
-## How You Can Contribute
+## How you can contribute?
 
 Bug reports, feature requests, and suggestions are welcome.
 While this is a hobby project and responses may not be immediate, I will try review all submissions.
 
-## How to Develop Your Own
+## How to develop your own?
 
 You have three alternatives based on your skill level:
 
@@ -109,7 +109,7 @@ You have three alternatives based on your skill level:
    2.  **Fork this repo**: If you are familiar with Git and want to customize the project, you can fork this repository.
    3. **Build your own `.xlam` file**:You can start from scratch or use this repo as a base and develop your own `.xlam` file, adding or modifying the macros to suit your needs.
 
-## How to Edit the Code
+## How to edit the code?
 To edit the macros and custom functionality within the `.xlam` file, follow these steps:
 
 1. **Enable the Developer Tab in the Ribbon**: If you don't already have the Developer tab visible, activate it by following [this guide](https://support.microsoft.com/en-us/office/add-ins/show-the-developer-tab).
@@ -124,7 +124,7 @@ To edit the macros and custom functionality within the `.xlam` file, follow thes
     
 4. **Edit the Ribbon:** Download the [Office RibbonX Editor](https://github.com/fernandreu/office-ribbonx-editor) to edit the ribbon
 
-## Support More of This
+## Support more of this!
 If you love these tools and want to support a few of the late nights I've had building them, feel free to contribute to buying me a coffee...
 
 <a href="https://www.buymeacoffee.com/sam.robinson" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="41" width="174"></a>
