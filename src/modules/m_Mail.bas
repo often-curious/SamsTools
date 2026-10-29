@@ -78,7 +78,7 @@ Sub Mail_ActiveSheet(control As IRibbonControl)
             .BCC = ""
             .Subject = TempName
             .Body = "Hi there,"
-            .Attachments.Add Destwb.FullName
+            .Attachments.Add Destwb.fullName
             'You can add other files also like this
             '.Attachments.Add ("C:\test.txt")
             .Display   'or use .Send
@@ -186,7 +186,7 @@ Sub Mail_ActiveSheetVALUES(control As IRibbonControl)
             .BCC = ""
             .Subject = TempName
             .Body = "Hi there,"
-            .Attachments.Add Destwb.FullName
+            .Attachments.Add Destwb.fullName
             'You can add other files also like this
             '.Attachments.Add ("C:\test.txt")
             .Display   'or use .Send
@@ -260,7 +260,7 @@ Sub Mail_ActiveWorkbook(control As IRibbonControl)
             .BCC = ""
             .Subject = TempName
             .Body = "Hi there,"
-            .Attachments.Add sourceWb.FullName
+            .Attachments.Add sourceWb.fullName
             'You can add other files also like this
             '.Attachments.Add ("C:\test.txt")
             .Display   'or use .Send
@@ -386,7 +386,7 @@ Sub Mail_Selected_Sheets_VALUES(control As IRibbonControl)
             .BCC = ""
             .Subject = TempName
             .Body = "Hi there"
-            .Attachments.Add Destwb.FullName
+            .Attachments.Add Destwb.fullName
             'You can add other files also like this
             '.Attachments.Add ("C:\test.txt")
             .Display   'or use .Send

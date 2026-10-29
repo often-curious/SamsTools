@@ -13,147 +13,271 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 Option Explicit
 
-' Form-level dimension constants
-Private Const FORM_PADDING As Long = 5        ' Consistent padding around all edges
+'Navigation targets, filled in lock-step with the list rows
+Private mTargets As Collection
 
-' Column width constants
+'Form-level dimension constants
+Private Const FORM_PADDING As Long = 5
+
+'Column width constants
 Private Const COLUMN_WIDTH_ADDRESS As Long = 250
 Private Const COLUMN_WIDTH_VALUE As Long = 75
 Private Const COLUMN_WIDTH_FORMULA As Long = 200
 
-' Control spacing constants
-Private Const CONTROL_SPACING As Long = 15     ' Vertical space between controls
-Private Const HEADER_OFFSET As Long = 12       ' Space between headers and listbox
-Private Const SCROLLBAR_WIDTH As Long = 20     ' Width of vertical scrollbar
+'Control spacing constants
+Private Const CONTROL_SPACING As Long = 15
+Private Const HEADER_OFFSET As Long = 12
+Private Const SCROLLBAR_WIDTH As Long = 20
 
-Private Const INNER_WIDTH As Long = COLUMN_WIDTH_ADDRESS + COLUMN_WIDTH_VALUE + COLUMN_WIDTH_FORMULA + SCROLLBAR_WIDTH  ' Width of content
-Private Const FORM_WIDTH As Long = INNER_WIDTH + (4 * FORM_PADDING)  ' Total form width including padding
-Private Const FORM_HEIGHT As Long = 250       ' Total form height
+Private Const INNER_WIDTH As Long = _
+    COLUMN_WIDTH_ADDRESS + _
+    COLUMN_WIDTH_VALUE + _
+    COLUMN_WIDTH_FORMULA + _
+    SCROLLBAR_WIDTH
 
-' Formula box constants
+Private Const FORM_WIDTH As Long = _
+    INNER_WIDTH + (4 * FORM_PADDING)
+
+Private Const FORM_HEIGHT As Long = 250
+
+'Formula box constants
 Private Const FORMULA_HEIGHT As Long = 20
 Private Const FORMULA_TOP As Long = FORM_PADDING
-Private Const FORMULA_WIDTH As Long = INNER_WIDTH  ' Width matches the listbox content
+Private Const FORMULA_WIDTH As Long = INNER_WIDTH
 
-' ListBox constants
-Private Const LISTBOX_TOP As Long = FORMULA_TOP + FORMULA_HEIGHT + CONTROL_SPACING
+'ListBox constants
+Private Const LISTBOX_TOP As Long = _
+    FORMULA_TOP + FORMULA_HEIGHT + CONTROL_SPACING
+
 Private Const LISTBOX_WIDTH As Long = INNER_WIDTH
-Private Const LISTBOX_HEIGHT As Long = FORM_HEIGHT - LISTBOX_TOP - FORM_PADDING  ' Account for bottom padding
 
-' Function to get column widths string
+Private Const LISTBOX_HEIGHT As Long = _
+    FORM_HEIGHT - LISTBOX_TOP - FORM_PADDING
+
+
+'==========================================================
+' COLUMN WIDTHS
+'==========================================================
+
 Public Function GetColumnWidths() As String
-    GetColumnWidths = COLUMN_WIDTH_ADDRESS & ";" & _
-                     COLUMN_WIDTH_VALUE & ";" & _
-                     COLUMN_WIDTH_FORMULA
+
+    GetColumnWidths = _
+        COLUMN_WIDTH_ADDRESS & ";" & _
+        COLUMN_WIDTH_VALUE & ";" & _
+        COLUMN_WIDTH_FORMULA
+
 End Function
 
-Public Sub AddHeaders()
-    With lstDependents
-        ' Add headers using a Label control for each column
-        Dim headerLabel1 As MSForms.Label
-        Set headerLabel1 = Me.Controls.Add("Forms.Label.1", "lblHeader1")
-        With headerLabel1
-            .Top = lstDependents.Top - HEADER_OFFSET
-            .Left = lstDependents.Left + FORM_PADDING
-            .caption = "Address"
-            .width = COLUMN_WIDTH_ADDRESS
-        End With
-        
-        Dim headerLabel2 As MSForms.Label
-        Set headerLabel2 = Me.Controls.Add("Forms.Label.1", "lblHeader2")
-        With headerLabel2
-            .Top = lstDependents.Top - HEADER_OFFSET
-            .Left = lstDependents.Left + COLUMN_WIDTH_ADDRESS + FORM_PADDING
-            .caption = "Value"
-            .width = COLUMN_WIDTH_VALUE
-        End With
-        
-        Dim headerLabel3 As MSForms.Label
-        Set headerLabel3 = Me.Controls.Add("Forms.Label.1", "lblHeader3")
-        With headerLabel3
-            .Top = lstDependents.Top - HEADER_OFFSET
-            .Left = lstDependents.Left + COLUMN_WIDTH_ADDRESS + COLUMN_WIDTH_VALUE + FORM_PADDING
-            .caption = "Formula"
-            .width = COLUMN_WIDTH_FORMULA
-        End With
-    End With
+
+'==========================================================
+' NAVIGATION TARGETS
+'==========================================================
+
+Public Sub AddTarget(ByVal target As Range)
+
+    If target Is Nothing Then Exit Sub
+
+    If mTargets Is Nothing Then
+        Set mTargets = New Collection
+    End If
+
+    mTargets.Add target
+
 End Sub
 
+
+'==========================================================
+' HEADERS
+'==========================================================
+
+Public Sub AddHeaders()
+
+    Dim headerLabel1 As MSForms.Label
+    Dim headerLabel2 As MSForms.Label
+    Dim headerLabel3 As MSForms.Label
+
+    'Prevent duplicate headers if method is called again
+    On Error Resume Next
+
+    Me.Controls.Remove "lblHeader1"
+    Me.Controls.Remove "lblHeader2"
+    Me.Controls.Remove "lblHeader3"
+
+    On Error GoTo 0
+
+    Set headerLabel1 = _
+        Me.Controls.Add("Forms.Label.1", "lblHeader1")
+
+    With headerLabel1
+
+        .Top = lstDependents.Top - HEADER_OFFSET
+        .Left = lstDependents.Left + FORM_PADDING
+        .caption = "Address"
+        .width = COLUMN_WIDTH_ADDRESS
+
+    End With
+
+
+    Set headerLabel2 = _
+        Me.Controls.Add("Forms.Label.1", "lblHeader2")
+
+    With headerLabel2
+
+        .Top = lstDependents.Top - HEADER_OFFSET
+
+        .Left = _
+            lstDependents.Left + _
+            COLUMN_WIDTH_ADDRESS + _
+            FORM_PADDING
+
+        .caption = "Value"
+        .width = COLUMN_WIDTH_VALUE
+
+    End With
+
+
+    Set headerLabel3 = _
+        Me.Controls.Add("Forms.Label.1", "lblHeader3")
+
+    With headerLabel3
+
+        .Top = lstDependents.Top - HEADER_OFFSET
+
+        .Left = _
+            lstDependents.Left + _
+            COLUMN_WIDTH_ADDRESS + _
+            COLUMN_WIDTH_VALUE + _
+            FORM_PADDING
+
+        .caption = "Formula"
+        .width = COLUMN_WIDTH_FORMULA
+
+    End With
+
+End Sub
+
+
+'==========================================================
+' INITIALISE FORM
+'==========================================================
+
 Private Sub UserForm_Initialize()
-    ' Set form caption and size
+
+    Set mTargets = New Collection
+
+    'Set form caption and size
     Me.caption = "Trace Dependents"
     Me.width = FORM_WIDTH
     Me.Height = FORM_HEIGHT + (4 * FORM_PADDING) - 2
-    
-    ' Initialize the formula text box
+
+
+    'Create formula text box
     With Me.Controls.Add("Forms.TextBox.1", "txtFormula")
+
         .Top = FORMULA_TOP
         .Left = FORM_PADDING
         .width = FORMULA_WIDTH
         .Height = FORMULA_HEIGHT
+
         .BackColor = RGB(240, 240, 240)
+
         .Locked = True
         .MultiLine = True
-        .Font.SIZE = 10
+        .WordWrap = False
+        .ScrollBars = fmScrollBarsHorizontal
+
+        .Font.Size = 10
+
     End With
-    
-    ' Initialize the list box with adjusted positioning
+
+
+    'Configure list box
     With lstDependents
+
         .Top = LISTBOX_TOP
         .Left = FORM_PADDING
         .width = LISTBOX_WIDTH
         .Height = LISTBOX_HEIGHT
+
         .ColumnCount = 3
         .ColumnWidths = GetColumnWidths()
-        .Font.SIZE = 10
+
+        .Font.Size = 10
+
     End With
+
 End Sub
+
+
+'==========================================================
+' LISTBOX NAVIGATION
+'==========================================================
 
 Private Sub lstDependents_Click()
-    On Error Resume Next
-    If lstDependents.ListIndex < 0 Then Exit Sub
-    
-    Dim dependentAddress As String
-    dependentAddress = lstDependents.List(lstDependents.ListIndex, 0) ' Get first column value
-    Debug.Print "dependentAddress: " & dependentAddress
-    
-    'Parse out sheet name and cell address
-    Dim exclamationPosition As Integer
-    exclamationPosition = InStr(dependentAddress, "!")
-    
-    If exclamationPosition > 0 Then
-        Dim sheetName As String
-        sheetName = Mid(dependentAddress, InStrRev(dependentAddress, "]") + 1, exclamationPosition - InStrRev(dependentAddress, "]") - 1)
-        Dim cellAddress As String
-        cellAddress = Mid(dependentAddress, exclamationPosition + 1)
-        
-        ' Check for trailing single quote
-        If Right(sheetName, 1) = "'" Then
-            sheetName = Left(sheetName, Len(sheetName) - 1)
-        End If
-        
-        ' Activate the Sheet and select the cell
-        Worksheets(sheetName).Activate
-        With Worksheets(sheetName).Range(cellAddress)
-            .Select
-            ' Update formula display
-            Me.Controls("txtFormula").text = .formula
-        End With
+
+    Dim i As Long
+    Dim target As Range
+
+    i = lstDependents.ListIndex
+
+    If i < 0 Then Exit Sub
+    If mTargets Is Nothing Then Exit Sub
+
+    'ListBox is zero-based.
+    'Collection is one-based.
+    If i + 1 > mTargets.count Then Exit Sub
+
+    Set target = mTargets(i + 1)
+
+    If target Is Nothing Then Exit Sub
+
+    'Navigate directly to the stored Range.
+    'No address parsing is required.
+    On Error GoTo NavigationError
+
+    Application.GoTo _
+        Reference:=target, _
+        Scroll:=True
+
+    'Update formula display
+    If target.CountLarge > 1 Then
+
+        Me.Controls("txtFormula").text = _
+            CStr(target.Cells(1, 1).formula)
+
     Else
-        ' Remove any indentation before trying to use the address
-        dependentAddress = Trim(dependentAddress)
-        Range(dependentAddress).Select
-        Me.Controls("txtFormula").text = Selection.formula
+
+        Me.Controls("txtFormula").text = _
+            CStr(target.formula)
+
     End If
-    On Error GoTo 0
+
+    Exit Sub
+
+
+NavigationError:
+
+    MsgBox _
+        "Excel could not navigate to this dependent.", _
+        vbExclamation, _
+        "Trace Dependents"
+
 End Sub
 
-Private Sub lstDependents_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+
+'==========================================================
+' KEYBOARD
+'==========================================================
+
+Private Sub lstDependents_KeyDown( _
+    ByVal KeyCode As MSForms.ReturnInteger, _
+    ByVal Shift As Integer)
+
     If KeyCode = vbKeyEscape Then
         Unload Me
     End If
+
 End Sub
 

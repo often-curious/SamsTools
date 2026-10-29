@@ -6,7 +6,7 @@ Public Sub doMultiCopy(control As IRibbonControl)
   Dim vRegions As Variant
   Dim rngRegions() As Excel.Range
  
-  vRegions = Split(Selection.Address, ",")
+  vRegions = Split(Selection.address, ",")
  
   ReDim rngRegions(LBound(vRegions) To UBound(vRegions))
  

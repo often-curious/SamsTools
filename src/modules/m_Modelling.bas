@@ -368,12 +368,12 @@ NextMatch:
                     If hasPlug Then
                         With summaryWS
                             .Cells(summaryRow, 1).value = ws.Name
-                            targetAddress = "'" & ws.Name & "'!" & cell.Address
+                            targetAddress = "'" & ws.Name & "'!" & cell.address
                             .Hyperlinks.Add _
                                 Anchor:=.Cells(summaryRow, 2), _
-                                Address:="", _
+                                address:="", _
                                 SubAddress:=targetAddress, _
-                                TextToDisplay:=cell.Address
+                                TextToDisplay:=cell.address
                             .Cells(summaryRow, 3).value = "'" & cell.formula
                             .Cells(summaryRow, 4).value = GetPlugComment(cell.formula)
                         End With

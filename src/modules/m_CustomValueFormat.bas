@@ -7,14 +7,14 @@ End Sub
 
 Sub ToggleCustomNumberFormat(control As IRibbonControl)
 
-    Dim Formats() As String
+    Dim formats() As String
     Dim FormatCount As Long
     Dim i As Long
     Dim Fmt As String
     Dim TestCell As Range
     
     Dim rng As Range
-    Dim CurrentFormat As String
+    Dim currentFormat As String
     Dim NextIndex As Long
 
     If TypeName(Selection) <> "Range" Then Exit Sub
@@ -38,8 +38,8 @@ Sub ToggleCustomNumberFormat(control As IRibbonControl)
 
             If Err.Number = 0 Then
                 FormatCount = FormatCount + 1
-                ReDim Preserve Formats(1 To FormatCount)
-                Formats(FormatCount) = Fmt
+                ReDim Preserve formats(1 To FormatCount)
+                formats(FormatCount) = Fmt
             End If
 
             Err.Clear
@@ -57,13 +57,13 @@ Sub ToggleCustomNumberFormat(control As IRibbonControl)
     '----------------------------------------
     ' Determine current format (based on first cell)
     '----------------------------------------
-    CurrentFormat = rng.Cells(1, 1).numberFormat
+    currentFormat = rng.Cells(1, 1).numberFormat
 
     NextIndex = 1
 
     For i = 1 To FormatCount
 
-        If CurrentFormat = Formats(i) Then
+        If currentFormat = formats(i) Then
 
             If i = FormatCount Then
                 NextIndex = 1
@@ -80,7 +80,7 @@ Sub ToggleCustomNumberFormat(control As IRibbonControl)
     '----------------------------------------
     ' Apply to ALL selected cells
     '----------------------------------------
-    rng.numberFormat = Formats(NextIndex)
+    rng.numberFormat = formats(NextIndex)
 
 
 End Sub

@@ -33,7 +33,7 @@ Public Function GetColor(Optional DefaultColor As Long = 0) As Long
     Dim CustColors(15) As Long
     
     cc.lStructSize = LenB(cc)
-    cc.hwndOwner = Application.Hwnd
+    cc.hwndOwner = Application.hwnd
     cc.lpCustColors = VarPtr(CustColors(0))
     cc.rgbResult = DefaultColor
     cc.flags = 0
@@ -691,22 +691,32 @@ Sub LightenColor(control As IRibbonControl)
 
     ' --- Handle Range (Cells) ---
     If TypeName(Selection) = "Range" Then
-        Dim cell As Range
-        For Each cell In Selection
-            If cell.Interior.colorIndex = xlNone Then
-                colorVal = cell.Font.color
-                RGBComponents colorVal, r, g, b
-                hsl = RGBToHSL(r, g, b)
-                hsl.l = WorksheetFunction.Min(1, hsl.l + 0.1) ' lighten
-                cell.Font.color = HSLToRGB(hsl)
-            Else
-                colorVal = cell.Interior.color
-                RGBComponents colorVal, r, g, b
-                hsl = RGBToHSL(r, g, b)
-                hsl.l = WorksheetFunction.Min(1, hsl.l + 0.1) ' lighten
-                cell.Interior.color = HSLToRGB(hsl)
-            End If
-        Next cell
+
+        Dim rng As Range
+        Set rng = Selection
+    
+        'Use the first cell in the selection as the source colour
+        If rng.Cells(1).Interior.colorIndex = xlNone Then
+    
+            colorVal = rng.Cells(1).Font.color
+    
+            RGBComponents colorVal, r, g, b
+            hsl = RGBToHSL(r, g, b)
+            hsl.l = WorksheetFunction.Min(1, hsl.l + 0.1)
+    
+            rng.Font.color = HSLToRGB(hsl)
+    
+        Else
+    
+            colorVal = rng.Cells(1).Interior.color
+    
+            RGBComponents colorVal, r, g, b
+            hsl = RGBToHSL(r, g, b)
+            hsl.l = WorksheetFunction.Min(1, hsl.l + 0.1)
+    
+            rng.Interior.color = HSLToRGB(hsl)
+
+    End If
 
     ' --- Handle Chart Series or Full Chart ---
     ElseIf Not ActiveChart Is Nothing Then
@@ -831,22 +841,32 @@ Sub DarkenColor(control As IRibbonControl)
 
     ' --- Handle Range (Cells) ---
     If TypeName(Selection) = "Range" Then
-        Dim cell As Range
-        For Each cell In Selection
-            If cell.Interior.colorIndex = xlNone Then
-                colorVal = cell.Font.color
-                RGBComponents colorVal, r, g, b
-                hsl = RGBToHSL(r, g, b)
-                hsl.l = WorksheetFunction.Max(0, hsl.l - 0.1)
-                cell.Font.color = HSLToRGB(hsl)
-            Else
-                colorVal = cell.Interior.color
-                RGBComponents colorVal, r, g, b
-                hsl = RGBToHSL(r, g, b)
-                hsl.l = WorksheetFunction.Max(0, hsl.l - 0.1)
-                cell.Interior.color = HSLToRGB(hsl)
-            End If
-        Next cell
+    
+        Dim rng As Range
+        Set rng = Selection
+    
+        'Use the first cell in the selection as the source colour
+        If rng.Cells(1).Interior.colorIndex = xlNone Then
+    
+            colorVal = rng.Cells(1).Font.color
+    
+            RGBComponents colorVal, r, g, b
+            hsl = RGBToHSL(r, g, b)
+            hsl.l = WorksheetFunction.Max(0, hsl.l - 0.1)
+    
+            rng.Font.color = HSLToRGB(hsl)
+    
+        Else
+    
+            colorVal = rng.Cells(1).Interior.color
+    
+            RGBComponents colorVal, r, g, b
+            hsl = RGBToHSL(r, g, b)
+            hsl.l = WorksheetFunction.Max(0, hsl.l - 0.1)
+    
+            rng.Interior.color = HSLToRGB(hsl)
+    
+        End If
 
     ' --- Handle Chart Series or Full Chart ---
         ElseIf Not ActiveChart Is Nothing Then

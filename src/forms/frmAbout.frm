@@ -16,7 +16,7 @@ Attribute VB_Exposed = False
 
 Option Explicit
 
-Const SamsToolsVersion As String = "2026.07"
+Const SamsToolsVersion As String = "2026.10"
 
 Private Sub btnOK_Click()
     Unload Me

@@ -12,7 +12,7 @@ End If
 Dim sht As Worksheet
 Dim Content_sht As Worksheet
 Dim myArray() As Variant
-Dim x As Long, y As Long
+Dim X As Long, Y As Long
 Dim shtName1 As String
 Dim ContentName As String
 Dim myAnswer As VbMsgBoxResult
@@ -52,48 +52,48 @@ Content_sht.Range("B2") = "Table of Contents"
 Content_sht.Range("B2").Font.Bold = True
 
 'Build array of VISIBLE sheet names (excluding the TOC itself)
-x = 0
+X = 0
 ReDim myArray(1 To Worksheets.count) 'over-allocate initially
 For Each sht In ActiveWorkbook.Worksheets
     If sht.Name <> ContentName And sht.Visible = xlSheetVisible Then
-        x = x + 1
-        myArray(x) = sht.Name
+        X = X + 1
+        myArray(X) = sht.Name
     End If
 Next sht
-If x = 0 Then GoTo ErrorHandler 'no visible sheets to link
-ReDim Preserve myArray(1 To x)
+If X = 0 Then GoTo ErrorHandler 'no visible sheets to link
+ReDim Preserve myArray(1 To X)
 
 'Sort alphabetically if selected
 If sortAlpha Then
-    For x = LBound(myArray) To UBound(myArray)
-        For y = x + 1 To UBound(myArray)
-            If UCase(myArray(y)) < UCase(myArray(x)) Then
-                shtName1 = myArray(x)
-                myArray(x) = myArray(y)
-                myArray(y) = shtName1
+    For X = LBound(myArray) To UBound(myArray)
+        For Y = X + 1 To UBound(myArray)
+            If UCase(myArray(Y)) < UCase(myArray(X)) Then
+                shtName1 = myArray(X)
+                myArray(X) = myArray(Y)
+                myArray(Y) = shtName1
             End If
-        Next y
-    Next x
+        Next Y
+    Next X
 End If
 
 'Add hyperlinks
-For x = LBound(myArray) To UBound(myArray)
-    Set sht = Worksheets(myArray(x))
+For X = LBound(myArray) To UBound(myArray)
+    Set sht = Worksheets(myArray(X))
     With Content_sht
-        .Hyperlinks.Add .Cells(x + 3, 3), "", "'" & sht.Name & "'!A1", TextToDisplay:=sht.Name
-        .Cells(x + 3, 2).value = x
+        .Hyperlinks.Add .Cells(X + 3, 3), "", "'" & sht.Name & "'!A1", TextToDisplay:=sht.Name
+        .Cells(X + 3, 2).value = X
     End With
-Next x
+Next X
 
 'Format sheet
 Content_sht.Activate
 Content_sht.Columns(3).EntireColumn.AutoFit
 Columns("A:A").ColumnWidth = 2.14
 Columns("B:B").ColumnWidth = 3.86
-Range("B2").Font.SIZE = 16
+Range("B2").Font.Size = 16
 Range("B2:F2").Borders(xlEdgeBottom).Weight = xlThin
 
-With Range("B4:B" & x + 2)
+With Range("B4:B" & X + 2)
     .Borders(xlInsideHorizontal).color = RGB(255, 255, 255)
     .Borders(xlInsideHorizontal).Weight = xlMedium
     .HorizontalAlignment = xlCenter
@@ -177,7 +177,7 @@ For Each sht In ActiveWorkbook.Worksheets
         With shp
             .Fill.ForeColor.RGB = RGB(21, 96, 130)
             .line.Visible = msoFalse
-            .TextFrame2.TextRange.Font.SIZE = 10
+            .TextFrame2.TextRange.Font.Size = 10
             .TextFrame2.TextRange.text = buttonText
             .TextFrame2.TextRange.Font.Name = "Lucida Sans Unicode"
             .TextFrame2.TextRange.Font.Bold = True
@@ -241,7 +241,7 @@ With ActiveSheet
     .Cells.EntireColumn.AutoFit
     .Cells.EntireRow.AutoFit
     .Range("B2").Font.Bold = True
-    .Range("B2").Font.SIZE = 16
+    .Range("B2").Font.Size = 16
 End With
 
 Columns("A:A").ColumnWidth = 2.14
@@ -274,7 +274,7 @@ Sub ListAllLinks(control As IRibbonControl)
                 If InStr(1, rCell.formula, "[") > 0 Then
                     cnt = cnt + 1
                     ReDim Preserve aLinks(1 To 2, 1 To cnt)
-                    aLinks(1, cnt) = rCell.Address(, , , True)
+                    aLinks(1, cnt) = rCell.address(, , , True)
                     aLinks(2, cnt) = "'" & rCell.formula
                 End If
             Next rCell
@@ -448,8 +448,8 @@ Sub Issue_log(control As IRibbonControl)
         ' Hyperlinked reference to top-left cell
         Dim addr As String, linkFormula As String
         Dim labelAddr As String
-        addr = TargetCell.Address(False, False) ' Link target
-        labelAddr = Selection.Address(False, False) ' Display text (full range)
+        addr = TargetCell.address(False, False) ' Link target
+        labelAddr = Selection.address(False, False) ' Display text (full range)
         linkFormula = "=HYPERLINK(""#'" & TargetCell.Worksheet.Name & "'!" & addr & """,""" & labelAddr & """)"
         .Cells(lastRow, "B").formula = linkFormula
 
@@ -500,7 +500,7 @@ Sub CreateCalendarv2(control As IRibbonControl)
     ActiveWindow.DisplayGridlines = False
         With Cells
             .ColumnWidth = 3.5
-            .Font.SIZE = 8
+            .Font.Size = 8
             .HorizontalAlignment = xlCenter
         End With
 
@@ -570,7 +570,7 @@ Sub CreateCalendarv2(control As IRibbonControl)
         'Add dates to month range and format
         For Each rCell In Range(strAddress)
             dDate = DateSerial(Year(Date), lMonth, lDays)
-            dayofweek = Range(rCell.Address).Column
+            dayofweek = Range(rCell.address).Column
                 If Month(dDate) = lMonth And Weekday(dDate) = Weekday(Cells(1, dayofweek)) Then ' It's a valid date
                     With rCell
                         .value = dDate
@@ -648,7 +648,7 @@ Sub CreateCalendar(control As IRibbonControl)
     ActiveWindow.DisplayGridlines = False
         With Cells
             .ColumnWidth = 3.5
-            .Font.SIZE = 8
+            .Font.Size = 8
             .HorizontalAlignment = xlCenter
         End With
 
@@ -957,7 +957,7 @@ Sub CreateAgenda(control As IRibbonControl)
     ws.Range("B2").value = "Agenda"
     With ws.Range("B2")
         .Font.Bold = True
-        .Font.SIZE = 16
+        .Font.Size = 16
     End With
     
     ' Help text in row 3

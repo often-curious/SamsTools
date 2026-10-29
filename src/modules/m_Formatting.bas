@@ -1,4 +1,6 @@
 Attribute VB_Name = "m_Formatting"
+Option Explicit
+
 Sub CentreContent(control As IRibbonControl)
     Dim rng As Range
     Dim vAlign As XlVAlign
@@ -39,8 +41,13 @@ Sub CentreContent(control As IRibbonControl)
     End If
 End Sub
 
-
 Sub ClearSelectedCellFormats(control As IRibbonControl)
+
+    Clear_Selected_Cell_Formats
+
+End Sub
+
+Sub Clear_Selected_Cell_Formats()
     Dim cellRange As Range
     On Error Resume Next
     Set cellRange = Intersect(Selection, Selection.Worksheet.UsedRange)
@@ -54,6 +61,12 @@ Sub ClearSelectedCellFormats(control As IRibbonControl)
 End Sub
 
 Sub ToggleTotalFormatting(control As IRibbonControl)
+
+    Toggle_Total_Formatting
+
+End Sub
+
+Sub Toggle_Total_Formatting()
     Dim cell As Range
     Dim topBorder As Border
     Dim bottomBorder As Border
@@ -108,6 +121,24 @@ Sub ToggleTotalFormatting(control As IRibbonControl)
             bottomBorder.LineStyle = xlNone
         End If
     Next cell
+End Sub
+
+Sub ToggleCentreAcrossSelection(control As IRibbonControl)
+
+    Toggle_Centre_Across_Selection
+
+End Sub
+
+Sub Toggle_Centre_Across_Selection()
+
+    With Selection
+        If .HorizontalAlignment = xlCenterAcrossSelection Then
+            .HorizontalAlignment = xlGeneral
+        Else
+            .HorizontalAlignment = xlCenterAcrossSelection
+        End If
+    End With
+
 End Sub
 
 Sub ConvertMergedCellsToCenterAcross(control As IRibbonControl)
@@ -285,6 +316,12 @@ End Sub
 
 Sub FormatAccounting(control As IRibbonControl)
 
+Format_Accounting
+
+End Sub
+
+Sub Format_Accounting()
+
     ToggleNumberFormat Array( _
         "#,##0;[Red](#,##0);-", _
         "[Red]#,##0;(#,##0);-", _
@@ -297,6 +334,12 @@ Sub FormatAccounting(control As IRibbonControl)
 End Sub
 
 Sub FormatAccountingDollars(control As IRibbonControl)
+
+Format_Accounting_Dollars
+
+End Sub
+
+Sub Format_Accounting_Dollars()
 
 
     ToggleNumberFormat Array( _
@@ -341,67 +384,198 @@ End Sub
 
 ' Ribbon callback keeps its signature
 Public Sub Cell_Model_Formatting(control As IRibbonControl)
-    Do_Cell_Model_Formatting
+    Cycle_Cell_Style
 End Sub
 
 ' OnKey wrapper with no parameters
-Public Sub Run_Cell_Model_Formatting()
-    Do_Cell_Model_Formatting
+Public Sub Run_Cycle_Cell_Style()
+    Cycle_Cell_Style
 End Sub
 
-Public Sub Do_Cell_Model_Formatting()
-    Dim cellranges As Range
-    Dim cellselected As Range
+Public Sub Cycle_Cell_Style()
+    Dim rng As Range
+    Dim c As Range
+    Dim CurrentStyle As Long
+    Dim NextStyle As Long
 
+    On Error GoTo CleanExit
+    
+    If TypeName(Selection) <> "Range" Then Exit Sub
+    
     Application.ScreenUpdating = False
     Application.EnableEvents = False
 
-    Set cellranges = Application.Selection
+    Set rng = Selection
 
-    On Error Resume Next ' Start error bypassing
+    'Determine style from first cell in selection
+    CurrentStyle = GetStyleIndex(rng.Cells(1))
 
-    ' Apply number format and border to each cell
-    For Each cellselected In cellranges
-        cellselected.BorderAround _
-            LineStyle:=xlContinuous, _
-            Weight:=xlThin, _
-            color:=RGB(192, 192, 192)
-    Next cellselected
+    'Move to next style
+    NextStyle = CurrentStyle + 1
+    If NextStyle > 6 Then NextStyle = 1
 
-    ' Conditional formatting & styling
-    If cellranges.Font.color = RGB(255, 255, 204) And cellranges.Interior.colorIndex = 19 Then
-        cellranges.Interior.color = RGB(0, 0, 0)
-        cellranges.Font.colorIndex = 45
-    
-    ElseIf cellranges.Font.colorIndex = 45 Then
-        cellranges.Interior.colorIndex = 15
-        cellranges.Font.colorIndex = 10
-        For Each cellselected In cellranges
-            cellselected.BorderAround _
-                LineStyle:=xlDouble, _
-                Weight:=xlThin, _
-                colorIndex:=16
-        Next cellselected
-        cellranges.numberFormat = "[Color10][=0]""Ok"";[Red]""Error"""
-    
-    ElseIf cellranges.Interior.colorIndex = 15 Then
-        cellranges.Interior.color = RGB(255, 255, 255)
-        cellranges.Font.color = RGB(0, 0, 0)
-    
-    Else
-        cellranges.Interior.color = RGB(255, 255, 204)
-        cellranges.Font.color = RGB(0, 0, 255)
-    End If
+    ApplyStyle rng, NextStyle
 
-    On Error GoTo 0 ' Turn off error bypassing
-
+CleanExit:
     Application.ScreenUpdating = True
     Application.EnableEvents = True
+
+End Sub
+
+Private Function GetStyleIndex(c As Range) As Long
+
+    With c
+
+        'Not Used
+        If .Interior.pattern = xlLightUp _
+           And .Interior.PatternColor = RGB(193, 193, 193) Then
+            GetStyleIndex = 6
+            Exit Function
+        End If
+
+        'Input
+        If .Interior.color = RGB(255, 255, 204) _
+           And .Font.color = RGB(0, 0, 255) Then
+            GetStyleIndex = 1
+            Exit Function
+        End If
+
+        'Calculation
+        'Important: also checks for the grey border so blank/default cells are not treated as calculation cells
+        If .Interior.color = RGB(255, 255, 255) _
+           And .Font.color = RGB(0, 0, 0) _
+           And HasModelBorder(c) Then
+            GetStyleIndex = 2
+            Exit Function
+        End If
+
+        'Linked Calculation
+        If .Interior.color = RGB(221, 235, 247) _
+           And .Font.color = RGB(0, 80, 215) Then
+            GetStyleIndex = 3
+            Exit Function
+        End If
+
+        'Unique Calculation
+        If .Interior.color = RGB(252, 228, 214) _
+           And .Font.color = RGB(204, 0, 0) Then
+            GetStyleIndex = 4
+            Exit Function
+        End If
+
+        'External Calculation
+        If .Interior.color = RGB(255, 242, 204) _
+           And .Font.color = RGB(204, 0, 0) Then
+            GetStyleIndex = 5
+            Exit Function
+        End If
+
+    End With
+
+    'Unknown or blank/default cell
+    'This means the next style applied will be Input
+    GetStyleIndex = 0
+
+End Function
+
+Private Function HasModelBorder(c As Range) As Boolean
+
+    On Error GoTo SafeExit
+
+    With c.Borders(xlEdgeLeft)
+        If .LineStyle = xlContinuous _
+           And .Weight = xlThin _
+           And .color = RGB(192, 192, 192) Then
+            HasModelBorder = True
+            Exit Function
+        End If
+    End With
+
+SafeExit:
+
+End Function
+
+Private Sub ApplyStyle(rng As Range, StyleIndex As Long)
+
+    Dim c As Range
+
+    Select Case StyleIndex
+
+        Case 1      'Input
+
+            For Each c In rng
+                c.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, _
+                               color:=RGB(192, 192, 192)
+            Next c
+
+            rng.Interior.color = RGB(255, 255, 204)
+            rng.Font.color = RGB(0, 0, 255)
+            rng.Interior.pattern = xlSolid
+
+        Case 2      'Calculation
+
+            For Each c In rng
+                c.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, _
+                               color:=RGB(192, 192, 192)
+            Next c
+
+            rng.Interior.color = RGB(255, 255, 255)
+            rng.Font.color = RGB(0, 0, 0)
+            rng.Interior.pattern = xlSolid
+
+        Case 3      'Linked Calculation
+
+            For Each c In rng
+                c.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, _
+                               color:=RGB(192, 192, 192)
+            Next c
+
+            rng.Interior.color = RGB(221, 235, 247)
+            rng.Font.color = RGB(0, 80, 215)
+            rng.Interior.pattern = xlSolid
+
+        Case 4      'Unique Calculation
+
+            For Each c In rng
+                c.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, _
+                               color:=RGB(192, 192, 192)
+            Next c
+
+            rng.Interior.color = RGB(252, 228, 214)
+            rng.Font.color = RGB(204, 0, 0)
+            rng.Interior.pattern = xlSolid
+
+        Case 5      'External Calculation
+
+            For Each c In rng
+                c.BorderAround LineStyle:=xlContinuous, Weight:=xlThin, _
+                               color:=RGB(192, 192, 192)
+            Next c
+
+            rng.Interior.color = RGB(255, 242, 204)
+            rng.Font.color = RGB(204, 0, 0)
+            rng.Interior.pattern = xlSolid
+
+        Case 6      'Not Used
+
+            For Each c In rng
+                With c.Interior
+                    .pattern = xlLightUp
+                    .PatternColor = RGB(193, 193, 193)
+                    .color = RGB(255, 255, 255)
+                End With
+            Next c
+
+            rng.Font.color = RGB(0, 0, 0)
+
+    End Select
+
 End Sub
 
 
 Sub Apply_Input_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -425,6 +599,7 @@ End Sub
 
 Sub Apply_Linked_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -470,6 +645,7 @@ End Sub
 
 Sub Apply_Calculation_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -491,6 +667,7 @@ End Sub
 
 Sub Apply_Linked_Calculation_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -512,6 +689,7 @@ End Sub
 
 Sub Apply_Unique_Calculation_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -533,6 +711,7 @@ End Sub
 
 Sub Apply_NotUsed_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -596,6 +775,7 @@ End Sub
 
 Sub Apply_DotBorder_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -617,6 +797,7 @@ End Sub
 
 Sub Apply_DashBorder_Style(control As IRibbonControl)
     Dim cellranges As Range
+    Dim cellselected As Range
 
     On Error Resume Next
     Application.ScreenUpdating = False
@@ -838,23 +1019,23 @@ Sub ApplyOkabeItoTheme(control As IRibbonControl)
     With theme
     
         ' Dark / Light
-        .Colors(msoThemeDark1).RGB = RGB(0, 0, 0)
-        .Colors(msoThemeLight1).RGB = RGB(255, 255, 255)
+        .colors(msoThemeDark1).RGB = RGB(0, 0, 0)
+        .colors(msoThemeLight1).RGB = RGB(255, 255, 255)
         
-        .Colors(msoThemeDark2).RGB = RGB(60, 60, 60)
-        .Colors(msoThemeLight2).RGB = RGB(242, 242, 242)
+        .colors(msoThemeDark2).RGB = RGB(60, 60, 60)
+        .colors(msoThemeLight2).RGB = RGB(242, 242, 242)
 
         ' Accent colours
-        .Colors(msoThemeAccent1).RGB = RGB(0, 114, 178)     ' Blue
-        .Colors(msoThemeAccent2).RGB = RGB(230, 159, 0)     ' Orange
-        .Colors(msoThemeAccent3).RGB = RGB(0, 158, 115)     ' Bluish Green
-        .Colors(msoThemeAccent4).RGB = RGB(204, 121, 167)   ' Reddish Purple
-        .Colors(msoThemeAccent5).RGB = RGB(86, 180, 233)    ' Sky Blue
-        .Colors(msoThemeAccent6).RGB = RGB(213, 94, 0)      ' Vermillion
+        .colors(msoThemeAccent1).RGB = RGB(0, 114, 178)     ' Blue
+        .colors(msoThemeAccent2).RGB = RGB(230, 159, 0)     ' Orange
+        .colors(msoThemeAccent3).RGB = RGB(0, 158, 115)     ' Bluish Green
+        .colors(msoThemeAccent4).RGB = RGB(204, 121, 167)   ' Reddish Purple
+        .colors(msoThemeAccent5).RGB = RGB(86, 180, 233)    ' Sky Blue
+        .colors(msoThemeAccent6).RGB = RGB(213, 94, 0)      ' Vermillion
 
         ' Hyperlinks
-        .Colors(msoThemeHyperlink).RGB = RGB(0, 114, 178)
-        .Colors(msoThemeFollowedHyperlink).RGB = RGB(204, 121, 167)
+        .colors(msoThemeHyperlink).RGB = RGB(0, 114, 178)
+        .colors(msoThemeFollowedHyperlink).RGB = RGB(204, 121, 167)
 
     End With
 
@@ -951,5 +1132,171 @@ Sub ReplaceFormattingByColourAndFormat(control As IRibbonControl)
     Application.ScreenUpdating = True
 
     MsgBox "Updated " & MatchRange.Cells.count & " cells.", vbInformation
+
+End Sub
+
+
+Sub CreateWorkbookFormattingLegend(control As IRibbonControl)
+
+    Dim ws As Worksheet
+    Dim rngStart As Range
+    Dim rngLegend As Range
+    Dim sampleCol As Range
+    Dim descCol As Range
+    
+    'Ask user where to place the legend
+    On Error Resume Next
+    Set rngStart = Application.InputBox( _
+        Prompt:="Select the top-left cell where you would like to place the formatting legend.", _
+        Title:="Place Formatting Legend", _
+        Type:=8)
+    On Error GoTo 0
+    
+    'Exit if user cancels
+    If rngStart Is Nothing Then Exit Sub
+    
+    Set ws = rngStart.Worksheet
+    
+    Application.ScreenUpdating = False
+    
+    'Legend uses 2 columns x 9 rows
+    Set rngLegend = rngStart.Resize(9, 2)
+    
+    'Clear existing content and formatting in the legend area
+    rngLegend.Clear
+    
+    'Set column widths
+    rngStart.EntireColumn.ColumnWidth = 12
+    rngStart.Offset(0, 1).EntireColumn.ColumnWidth = 85
+    
+    'General font
+    With rngLegend
+        .Font.Name = "Arial"
+        .Font.Size = 10
+        .VerticalAlignment = xlCenter
+    End With
+    
+    '========================
+    ' Header
+    '========================
+    With rngStart.Resize(1, 2)
+        .Interior.color = RGB(0, 70, 140)
+        .Font.color = RGB(255, 255, 255)
+        .Font.Bold = True
+    End With
+    
+    rngStart.value = "1.0"
+    rngStart.numberFormat = "0.0"
+    rngStart.Offset(0, 1).value = "Header"
+    
+    '========================
+    ' Subheader
+    '========================
+    With rngStart.Offset(1, 0).Resize(1, 2)
+        .Interior.color = RGB(217, 217, 217)
+        .Font.Bold = True
+    End With
+    
+    rngStart.Offset(1, 0).value = "1.1"
+    rngStart.Offset(1, 0).numberFormat = "0.0"
+    rngStart.Offset(1, 1).value = "Subheader"
+    
+    'Blank spacer row
+    rngStart.Offset(2, 0).Resize(1, 2).RowHeight = 18
+    
+    'Set references for legend body
+    Set sampleCol = rngStart.Offset(3, 0).Resize(6, 1)
+    Set descCol = rngStart.Offset(3, 1).Resize(6, 1)
+    
+    'Descriptions
+    descCol.Cells(1, 1).value = "Inputs or hard coded data"
+    descCol.Cells(2, 1).value = "Calculations / references to cell in same sheet"
+    descCol.Cells(3, 1).value = "Calculations / references to cells in other sheets"
+    descCol.Cells(4, 1).value = "Unique calculations relative to others in same group / section / row / column"
+    descCol.Cells(5, 1).value = "Calculations / references to cells in external links & files"
+    descCol.Cells(6, 1).value = "Not used cell when inline with calculation cells in a range"
+    
+    'Sample values
+    sampleCol.Cells(1, 1).value = 1000
+    sampleCol.Cells(2, 1).value = 1000
+    sampleCol.Cells(3, 1).value = 1000
+    sampleCol.Cells(4, 1).value = 1000
+    sampleCol.Cells(5, 1).value = 1000
+    
+    'Number formatting
+    sampleCol.numberFormat = "#,##0"
+    sampleCol.HorizontalAlignment = xlRight
+    
+    '========================
+    ' Formatting key styles
+    '========================
+    
+    'Inputs / hard coded data
+    With sampleCol.Cells(1, 1)
+        .Font.color = RGB(0, 0, 255)        'Blue font
+        .Interior.color = RGB(255, 255, 204) 'Very light yellow
+    End With
+    
+    'Calculations / references to cell in same sheet
+    With sampleCol.Cells(2, 1)
+        .Font.color = RGB(0, 0, 0)          'Black font
+        .Interior.color = RGB(255, 255, 255)
+    End With
+    
+    'Calculations / references to cells in other sheets
+    With sampleCol.Cells(3, 1)
+        .Font.color = RGB(0, 0, 255)        'Blue font
+        .Interior.color = RGB(221, 235, 247) 'Light blue fill
+    End With
+    
+    'Unique calculations relative to others in same group / section / row / column
+    With sampleCol.Cells(4, 1)
+        .Font.color = RGB(255, 0, 0)        'Red font
+        .Interior.color = RGB(252, 228, 214) 'Light orange fill
+    End With
+    
+    'Calculations / references to cells in external links & files
+    With sampleCol.Cells(5, 1)
+        .Font.color = RGB(255, 0, 0)        'Red font
+        .Interior.color = RGB(255, 242, 204)
+    End With
+    
+    'Not used cell when inline with calculation cells in a range
+    With sampleCol.Cells(6, 1)
+        .value = vbNullString
+        .Interior.pattern = xlPatternLightUp
+        .Interior.PatternColor = RGB(191, 191, 191)
+        .Interior.color = RGB(255, 255, 255)
+    End With
+    
+    'Description formatting
+    With descCol
+        .Font.color = RGB(0, 0, 0)
+        .HorizontalAlignment = xlLeft
+        .WrapText = False
+    End With
+    
+    'Row heights
+    rngLegend.RowHeight = 15
+    rngStart.Resize(2, 2).RowHeight = 18
+    
+    'Borders around example cells only
+    With sampleCol.Borders
+        .LineStyle = xlContinuous
+        .color = RGB(191, 191, 191)
+        .Weight = xlThin
+    End With
+    
+    'Remove borders from description cells
+    descCol.Borders.LineStyle = xlNone
+    
+    'Tidy up
+    rngLegend.Columns.AutoFit
+    rngStart.EntireColumn.ColumnWidth = 12
+    rngStart.Offset(0, 1).EntireColumn.ColumnWidth = 85
+    
+    Application.ScreenUpdating = True
+    
+    MsgBox "Formatting legend created successfully.", vbInformation, "Legend Created"
 
 End Sub

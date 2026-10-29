@@ -81,7 +81,7 @@ Private Sub ConfigureExamplePLSheet(ByVal ws As Worksheet)
     With ws
         .Cells.Clear
         .Cells.Font.Name = "Aptos Narrow"
-        .Cells.Font.SIZE = 11
+        .Cells.Font.Size = 11
         .Cells.ColumnWidth = 8.43
         .rows.RowHeight = 14.4
         .Columns(1).ColumnWidth = 2.8867188
@@ -879,7 +879,7 @@ Private Sub SetBaseFormat(ByVal r As Range, ByVal numFmt As String, ByVal fontSi
         .WrapText = wrapIt
         .ShrinkToFit = shrinkIt
         .Font.Name = "Aptos Narrow"
-        .Font.SIZE = fontSize
+        .Font.Size = fontSize
         .Font.Bold = isBold
         .Font.Italic = isItalic
         .Font.Underline = underlineStyle
@@ -922,13 +922,13 @@ End Sub
 Private Sub ApplyExamplePLRichText(ByVal ws As Worksheet)
     ws.Range("Q6").Value2 = ChrW$(&H2206) & " PY"
     With ws.Range("Q6")
-        .Characters(1, 1).Font.SIZE = 11
-        .Characters(2, Len(.Value2) - 1).Font.SIZE = 9.9
+        .Characters(1, 1).Font.Size = 11
+        .Characters(2, Len(.Value2) - 1).Font.Size = 9.9
     End With
     ws.Range("Z6").Value2 = ChrW$(&H2206) & " FC"
     With ws.Range("Z6")
-        .Characters(1, 1).Font.SIZE = 11
-        .Characters(2, Len(.Value2) - 1).Font.SIZE = 9.9
+        .Characters(1, 1).Font.Size = 11
+        .Characters(2, Len(.Value2) - 1).Font.Size = 9.9
     End With
 End Sub
 

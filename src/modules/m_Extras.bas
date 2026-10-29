@@ -102,65 +102,6 @@ Sub ShowMotivationalMessage(control As IRibbonControl)
     MsgBox messages(randomIndex), , "Motivation Boost!"
 End Sub
 
-    
-Sub TriggerEasterEgg()
-    Dim visibleRange As Range
-    Dim flashCells As Collection
-    Dim originalColors As Collection
-    Dim i As Long, cycle As Long
-    Dim r As Range
-    Dim colorOptions(1 To 3) As Long
-
-    On Error GoTo CleanUp
-    
-    frmParty.btnEndParty.Enabled = False
-
-    ' Define 3 alternating colors
-    colorOptions(1) = RGB(250, 250, 0) ' Yellow
-    colorOptions(2) = RGB(41, 209, 213) ' Teal
-    colorOptions(3) = RGB(240, 14, 132) ' Pink
-
-    Set flashCells = New Collection
-    Set originalColors = New Collection
-
-    Set visibleRange = ActiveWindow.visibleRange
-    Randomize
-
-    frmParty.Show vbModeless
-    
-    ' Select 30 random cells from visible range
-    For i = 1 To 30
-        Dim randRow As Long, randCol As Long
-        randRow = Int(Rnd() * visibleRange.rows.count) + 1
-        randCol = Int(Rnd() * visibleRange.Columns.count) + 1
-
-        Set r = visibleRange.Cells(randRow, randCol)
-        If Not r Is Nothing Then
-            flashCells.Add r
-            originalColors.Add r.Interior.color
-        End If
-    Next i
-
-    ' Flash for 7 cycles
-    For cycle = 1 To 7
-        For i = 1 To flashCells.count
-            Set r = flashCells(i)
-            Dim colorIndex As Long
-            colorIndex = Int((Rnd() * 3) + 1)
-            r.Interior.color = colorOptions(colorIndex)
-        Next i
-        DoEvents
-        Application.Wait Now + TimeValue("00:00:01")
-    Next cycle
-
-CleanUp:
-    ' Restore original colors
-    For i = 1 To flashCells.count
-        flashCells(i).Interior.color = originalColors(i)
-    Next i
-    
-    frmParty.btnEndParty.Enabled = True
-End Sub
 
 Sub Speak(control As IRibbonControl)
     Dim speechRange As Range

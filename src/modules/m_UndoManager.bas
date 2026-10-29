@@ -7,7 +7,7 @@ Sub SaveUndoState()
 
     For Each cell In Selection
         If Not cell.HasFormula Then
-            UndoValues(cell.Address) = cell.value
+            UndoValues(cell.address) = cell.value
         End If
     Next cell
 End Sub

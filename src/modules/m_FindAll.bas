@@ -136,7 +136,7 @@ If Not FoundCell Is Nothing Then
         If (FoundCell Is Nothing) Then
             Exit Do
         End If
-        If (FoundCell.Address = FirstFound.Address) Then
+        If (FoundCell.address = FirstFound.address) Then
             Exit Do
         End If
 

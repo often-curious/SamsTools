@@ -13,8 +13,10 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 Option Explicit
+
+' Navigation targets, filled in lock-step with the list rows
+Private mTargets As Collection
 
 ' Form-level dimension constants
 Private Const FORM_PADDING As Long = 5        ' Consistent padding around all edges
@@ -51,6 +53,12 @@ Public Function GetColumnWidths() As String
                      COLUMN_WIDTH_FORMULA
 End Function
 
+' Store a navigation target for the row just added to the list
+Public Sub AddTarget(ByVal target As Range)
+    If mTargets Is Nothing Then Set mTargets = New Collection
+    mTargets.Add target
+End Sub
+
 Public Sub AddHeaders()
     With lstPrecedents
         ' Add headers using a Label control for each column
@@ -62,7 +70,7 @@ Public Sub AddHeaders()
             .caption = "Address"
             .width = COLUMN_WIDTH_ADDRESS
         End With
-        
+
         Dim headerLabel2 As MSForms.Label
         Set headerLabel2 = Me.Controls.Add("Forms.Label.1", "lblHeader2")
         With headerLabel2
@@ -71,7 +79,7 @@ Public Sub AddHeaders()
             .caption = "Value"
             .width = COLUMN_WIDTH_VALUE
         End With
-        
+
         Dim headerLabel3 As MSForms.Label
         Set headerLabel3 = Me.Controls.Add("Forms.Label.1", "lblHeader3")
         With headerLabel3
@@ -84,11 +92,13 @@ Public Sub AddHeaders()
 End Sub
 
 Private Sub UserForm_Initialize()
+    Set mTargets = New Collection
+
     ' Set form caption and size
     Me.caption = "Trace Precedents"
     Me.width = FORM_WIDTH
     Me.Height = FORM_HEIGHT + (4 * FORM_PADDING) - 2
-    
+
     ' Initialize the formula text box
     With Me.Controls.Add("Forms.TextBox.1", "txtFormula")
         .Top = FORMULA_TOP
@@ -100,9 +110,9 @@ Private Sub UserForm_Initialize()
         .MultiLine = True
         .WordWrap = False
         .ScrollBars = fmScrollBarsHorizontal
-        .Font.SIZE = 10
+        .Font.Size = 10
     End With
-    
+
     ' Initialize the list box with adjusted positioning
     With lstPrecedents
         .Top = LISTBOX_TOP
@@ -111,55 +121,33 @@ Private Sub UserForm_Initialize()
         .Height = LISTBOX_HEIGHT
         .ColumnCount = 3
         .ColumnWidths = GetColumnWidths()
-        .Font.SIZE = 10
+        .Font.Size = 10
     End With
 End Sub
 
 Private Sub lstPrecedents_Click()
-    On Error Resume Next
-    If lstPrecedents.ListIndex < 0 Then Exit Sub
-    
-    Dim precedentAddress As String
-    precedentAddress = lstPrecedents.List(lstPrecedents.ListIndex, 0) ' Get first column value
-    Debug.Print "precedentAddress: " & precedentAddress
-    
-    'Parse out sheet name and cell address
-    Dim exclamationPosition As Integer
-    exclamationPosition = InStr(precedentAddress, "!")
-    
-    If exclamationPosition > 0 Then
-        Dim sheetName As String
-        sheetName = Mid(precedentAddress, InStrRev(precedentAddress, "]") + 1, exclamationPosition - InStrRev(precedentAddress, "]") - 1)
-        Dim cellAddress As String
-        cellAddress = Mid(precedentAddress, exclamationPosition + 1)
-        
-        ' Check for trailing single quote
-        If Right(sheetName, 1) = "'" Then
-            sheetName = Left(sheetName, Len(sheetName) - 1)
-        End If
-        
-        ' Activate the Sheet and select the cell
-        Worksheets(sheetName).Activate
-        With Worksheets(sheetName).Range(cellAddress)
-            .Select
-            ' Update formula display
-            Me.Controls("txtFormula").text = .formula
-        End With
-    Else
-        ' Remove any indentation before trying to use the address
-        precedentAddress = Trim(precedentAddress)
-        Range(precedentAddress).Select
-        Me.Controls("txtFormula").text = Selection.formula
-    End If
-    On Error GoTo 0
-End Sub
+    Dim i As Long
+    i = lstPrecedents.ListIndex
+    If i < 0 Then Exit Sub
+    If mTargets Is Nothing Then Exit Sub
+    If i + 1 > mTargets.count Then Exit Sub
 
+    Dim target As Range
+    Set target = mTargets(i + 1)
+    If target Is Nothing Then Exit Sub
+
+    Application.GoTo Reference:=target, Scroll:=True
+
+    If target.count > 1 Then
+        Me.Controls("txtFormula").text = CStr(target.Cells(1, 1).formula)
+    Else
+        Me.Controls("txtFormula").text = CStr(target.formula)
+    End If
+End Sub
 
 Private Sub lstPrecedents_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
     If KeyCode = vbKeyEscape Then
         Unload Me
     End If
 End Sub
-
-
 

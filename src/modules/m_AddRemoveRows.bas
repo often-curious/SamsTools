@@ -1,7 +1,7 @@
 Attribute VB_Name = "m_AddRemoveRows"
 Sub DeleteEveryXthRow(control As IRibbonControl)
     Dim rng As Range
-    Dim x As Long, y As Long
+    Dim X As Long, Y As Long
     Dim i As Long
     Dim deleteRow As Long
     Dim deletedCount As Long
@@ -27,13 +27,13 @@ Sub DeleteEveryXthRow(control As IRibbonControl)
         MsgBox "Please enter a valid positive number for the interval.", vbExclamation
         Exit Sub
     End If
-    x = CLng(userInput)
+    X = CLng(userInput)
 
-    xRowCount = rng.rows.count \ x
+    xRowCount = rng.rows.count \ X
 
     ' Ask user how many rows to delete each time (Y)
     userInput = InputBox("You've selected " & rng.rows.count & " rows." & vbNewLine & _
-                         "That means " & xRowCount & " delete points (every " & x & "th row)." & vbNewLine & _
+                         "That means " & xRowCount & " delete points (every " & X & "th row)." & vbNewLine & _
                          "How many rows would you like to delete at each point?", _
                          "Rows to Delete", 1)
     If userInput = "" Then Exit Sub ' User cancelled
@@ -41,20 +41,20 @@ Sub DeleteEveryXthRow(control As IRibbonControl)
         MsgBox "Please enter a valid positive number for rows to delete.", vbExclamation
         Exit Sub
     End If
-    y = CLng(userInput)
+    Y = CLng(userInput)
 
     deletedCount = 0
 
     ' Delete rows from top to bottom, adjusting for already deleted rows
     For i = 1 To rng.rows.count
-        If i Mod x = 0 Then
+        If i Mod X = 0 Then
             deleteRow = startRow + i - 1 - deletedCount
-            rows(deleteRow & ":" & deleteRow + y - 1).Delete Shift:=xlUp
-            deletedCount = deletedCount + y
+            rows(deleteRow & ":" & deleteRow + Y - 1).Delete Shift:=xlUp
+            deletedCount = deletedCount + Y
         End If
     Next i
 
-    MsgBox "Deleted " & y & " row(s) every " & x & "th row (" & xRowCount & " times).", vbInformation
+    MsgBox "Deleted " & Y & " row(s) every " & X & "th row (" & xRowCount & " times).", vbInformation
     Exit Sub
 
 ErrorHandler:
@@ -64,7 +64,7 @@ End Sub
 
 Sub InsertRowsEveryXth(control As IRibbonControl)
     Dim rng As Range
-    Dim x As Long, y As Long
+    Dim X As Long, Y As Long
     Dim i As Long
     Dim insertRow As Long
     Dim insertedCount As Long
@@ -92,12 +92,12 @@ Sub InsertRowsEveryXth(control As IRibbonControl)
         Exit Sub
     End If
 
-    x = CLng(userInput)
-    xRowCount = rng.rows.count \ x
+    X = CLng(userInput)
+    xRowCount = rng.rows.count \ X
 
     ' Prompt for how many rows to insert each time (Y)
     userInput = InputBox("You've selected " & rng.rows.count & " rows." & vbNewLine & _
-                         "That means " & xRowCount & " insert points (every " & x & "th row)." & vbNewLine & _
+                         "That means " & xRowCount & " insert points (every " & X & "th row)." & vbNewLine & _
                          "How many rows would you like to insert each time?", _
                          "Rows to Insert", 1)
 
@@ -107,19 +107,19 @@ Sub InsertRowsEveryXth(control As IRibbonControl)
         Exit Sub
     End If
 
-    y = CLng(userInput)
+    Y = CLng(userInput)
     insertedCount = 0
 
     ' Loop top to bottom, adjust for inserted rows
     For i = 1 To rng.rows.count
-        If i Mod x = 0 Then
+        If i Mod X = 0 Then
             insertRow = startRow + i + insertedCount
-            rows(insertRow & ":" & insertRow + y - 1).Insert Shift:=xlDown
-            insertedCount = insertedCount + y
+            rows(insertRow & ":" & insertRow + Y - 1).Insert Shift:=xlDown
+            insertedCount = insertedCount + Y
         End If
     Next i
 
-    MsgBox "Inserted " & y & " row(s) after every " & x & "th row (" & xRowCount & " times).", vbInformation
+    MsgBox "Inserted " & Y & " row(s) after every " & X & "th row (" & xRowCount & " times).", vbInformation
     Exit Sub
 
 ErrorHandler:

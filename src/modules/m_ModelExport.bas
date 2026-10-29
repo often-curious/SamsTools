@@ -57,7 +57,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
     fileStream.WriteLine "====================================================================="
     fileStream.WriteLine "             Excel Formula & Name Manager Dependency Log"
     fileStream.WriteLine "====================================================================="
-    fileStream.WriteLine "Workbook: " & wb.FullName
+    fileStream.WriteLine "Workbook: " & wb.fullName
     fileStream.WriteLine "Exported On: " & Now()
     fileStream.WriteLine ""
     
@@ -99,7 +99,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
             tableCounter = tableCounter + 1
             fileStream.WriteLine "Table Name: " & tbl.Name
             fileStream.WriteLine "  -> On Sheet: '" & ws.Name & "'"
-            fileStream.WriteLine "  -> Covers Range: " & tbl.Range.Address(False, False)
+            fileStream.WriteLine "  -> Covers Range: " & tbl.Range.address(False, False)
             fileStream.WriteLine "---------------------------------"
         Next tbl
     Next ws
@@ -123,7 +123,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
         
         If Not formulaCells Is Nothing Then
             For Each cell In formulaCells
-                fileStream.WriteLine "TARGET CELL: " & "'" & ws.Name & "'!" & cell.Address(False, False)
+                fileStream.WriteLine "TARGET CELL: " & "'" & ws.Name & "'!" & cell.address(False, False)
                 fileStream.WriteLine "  -> Formula: " & cell.FormulaLocal
                 
                 ' --- <<<< REVISED AND ROBUST ERROR HANDLING >>>> ---
@@ -131,7 +131,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
                 ' a precedent is not a valid range (e.g., external link, error value).
                 On Error Resume Next
                 
-                For Each precedentCell In cell.Precedents
+                For Each precedentCell In cell.precedents
                     Set tbl = Nothing ' Reset table object for each loop
                     
                     ' The .ListObject property itself can error, but we are protected
@@ -143,7 +143,7 @@ Public Sub ExportFormulaMap(control As IRibbonControl)
                     Else
                         ' It's a standard range. The .Address property might error if
                         ' precedentCell is invalid, but On Error Resume Next will skip it.
-                        fileStream.WriteLine "  <- DEPENDS ON: " & precedentCell.Address(External:=True)
+                        fileStream.WriteLine "  <- DEPENDS ON: " & precedentCell.address(External:=True)
                     End If
                 Next precedentCell
                 

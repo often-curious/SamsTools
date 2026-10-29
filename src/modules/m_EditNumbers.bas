@@ -15,73 +15,93 @@ Sub Onn()
 End Sub
 
 Sub MultiplyNumbers(control As IRibbonControl)
-
     Dim rng As Range
-    Dim data As Variant
-    Dim r As Long, c As Long
+    Dim cell As Range
     Dim multInput As String
     Dim mult As Double
-    Dim f As Variant
+    Dim f As String
 
-    ' Turn off Excel's overhead
-    Application.ScreenUpdating = False
-    Application.Calculation = xlCalculationManual
-    Application.EnableEvents = False
-    Application.DisplayAlerts = False
-    
-    
+    On Error GoTo ErrorHandler
+
+    ' Make sure cells are selected
+    If TypeName(Selection) <> "Range" Then
+        MsgBox "Please select one or more cells first.", vbExclamation
+        Exit Sub
+    End If
+
+    Set rng = Selection
 
     ' Ask for multiplier
 GetInput:
     multInput = InputBox("Enter number to multiply by", "Input Required")
 
-    ' Handle cancel (empty string AND user cancelled)
-    If multInput = "" Then GoTo CleanUp
+    If multInput = "" Then Exit Sub
 
-    ' Validate: must be numeric only
     If Not IsNumeric(multInput) Then
-        MsgBox "Error: Please enter a valid numeric value (e.g. 2, -5, 3.5).", vbExclamation
+        MsgBox "Please enter a valid numeric value (e.g. 2, -5, 3.5).", vbExclamation
         GoTo GetInput
     End If
-    
-    ShowLoading "Updating numbers..."
-    
+
     mult = CDbl(multInput)
 
-    Set rng = Selection
-    data = rng.value
+    ShowLoading "Updating numbers..."
 
-    For r = 1 To UBound(data, 1)
-        For c = 1 To UBound(data, 2)
+    ' Turn off Excel overhead
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+    Application.EnableEvents = False
+    Application.DisplayAlerts = False
 
-            If Not IsEmpty(data(r, c)) And IsNumeric(data(r, c)) Then
+    For Each cell In rng.Cells
 
-                f = rng.Cells(r, c).formula
+        ' Ignore errors and blanks
+        If Not IsError(cell.value) Then
 
-                If f <> "" Then
-                    If Left$(f, 1) = "=" Then f = Mid$(f, 2)
-                    data(r, c) = "=" & "(" & f & ")*" & mult
+            If Len(cell.value) > 0 And IsNumeric(cell.value) Then
+
+                If cell.HasFormula Then
+
+                    ' Existing formula
+                    f = cell.formula
+
+                    If Left$(f, 1) = "=" Then
+                        f = Mid$(f, 2)
+                    End If
+
+                    cell.formula = "=(" & f & ")*" & _
+                                   Replace(CStr(mult), ",", ".")
+
                 Else
-                    data(r, c) = "=" & data(r, c) & "*" & mult
+
+                    ' Existing numeric value
+                    cell.formula = "=" & _
+                                   Replace(CStr(cell.value), ",", ".") & _
+                                   "*" & _
+                                   Replace(CStr(mult), ",", ".")
+
                 End If
 
             End If
 
-        Next c
-    Next r
+        End If
 
-    rng.value = data
+    Next cell
 
 CleanUp:
     HideLoading
+
     Application.ScreenUpdating = True
     Application.Calculation = xlCalculationAutomatic
     Application.EnableEvents = True
     Application.DisplayAlerts = True
 
+    Exit Sub
+
+ErrorHandler:
+    MsgBox "Error " & Err.Number & ": " & Err.Description, vbExclamation
+    Resume CleanUp
+
 End Sub
-
-
 
 
 Sub DivideNumbers(control As IRibbonControl)
@@ -150,7 +170,7 @@ Sub TogglePercentNumber(control As IRibbonControl)
     Set rng = Selection ' Change this if you want a specific range
     
     Dim cell As Range
-    Dim fmt As String
+    Dim Fmt As String
     Dim val As Variant
     
     Call Off
@@ -158,10 +178,10 @@ Sub TogglePercentNumber(control As IRibbonControl)
     
     For Each cell In rng
         If Not IsEmpty(cell) And IsNumeric(cell.value) Then
-            fmt = cell.numberFormat
+            Fmt = cell.numberFormat
             
             ' Check if cell is formatted as percentage
-            If InStr(fmt, "%") > 0 Then
+            If InStr(Fmt, "%") > 0 Then
                 ' Convert percent to number: multiply by 100 and remove % format
                 val = cell.value * 100
                 cell.value = val

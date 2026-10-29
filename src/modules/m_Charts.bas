@@ -2,7 +2,9 @@ Attribute VB_Name = "m_Charts"
 
 Option Explicit
 
+Private Const MOVE_AMOUNT As Double = 2
 Public gSourceChart As Chart
+
 
 Sub FormatChart(control As IRibbonControl)
     Dim cht As Chart
@@ -254,13 +256,13 @@ Function InsertWaterfallTableTemplate() As Range
             With ws
                 ' Cumulative Total (D)
                 .Cells(r, baseCol + 3).formula = _
-                    "=SUMIFS(" & .Cells(startRow, baseCol + 1).Address(False, False) & ":" & .Cells(r, baseCol + 1).Address(False, False) & "," & _
-                                .Cells(startRow, baseCol + 2).Address(False, False) & ":" & .Cells(r, baseCol + 2).Address(False, False) & ",""<>" & "Y" & """)"
+                    "=SUMIFS(" & .Cells(startRow, baseCol + 1).address(False, False) & ":" & .Cells(r, baseCol + 1).address(False, False) & "," & _
+                                .Cells(startRow, baseCol + 2).address(False, False) & ":" & .Cells(r, baseCol + 2).address(False, False) & ",""<>" & "Y" & """)"
         
                 ' Totals (E)
-                .Cells(r, baseCol + 4).formula = "=IF(OR(" & .Cells(r, baseCol + 2).Address(False, False) & "=""Y""," & _
-                                                        .Cells(r, baseCol + 2).Address(False, False) & "=""Start"")," & _
-                                                        .Cells(r, baseCol + 3).Address(False, False) & ","""")"
+                .Cells(r, baseCol + 4).formula = "=IF(OR(" & .Cells(r, baseCol + 2).address(False, False) & "=""Y""," & _
+                                                        .Cells(r, baseCol + 2).address(False, False) & "=""Start"")," & _
+                                                        .Cells(r, baseCol + 3).address(False, False) & ","""")"
         
                 If r = startRow Then
                     ' Top row – fill others with 0
@@ -271,24 +273,24 @@ Function InsertWaterfallTableTemplate() As Range
                     .Cells(r, baseCol + 9).value = 0 ' Down < 0
                 Else
                     ' Full formulas below top row
-                    .Cells(r, baseCol + 5).formula = "=IFERROR(IF(" & .Cells(r, baseCol + 2).Address(False, False) & "=""" & "Y" & """,""""," & _
-                                                      "IF(" & .Cells(r - 1, baseCol + 3).Address(False, False) & "<0,MAX(" & .Cells(r - 1, baseCol + 3).Address(False, False) & "," & _
-                                                      .Cells(r - 1, baseCol + 3).Address(False, False) & "-" & .Cells(r, baseCol + 7).Address(False, False) & ")," & _
-                                                      "MIN(" & .Cells(r - 1, baseCol + 3).Address(False, False) & "," & .Cells(r - 1, baseCol + 3).Address(False, False) & "-" & _
-                                                      .Cells(r, baseCol + 8).Address(False, False) & "))),0)"
+                    .Cells(r, baseCol + 5).formula = "=IFERROR(IF(" & .Cells(r, baseCol + 2).address(False, False) & "=""" & "Y" & """,""""," & _
+                                                      "IF(" & .Cells(r - 1, baseCol + 3).address(False, False) & "<0,MAX(" & .Cells(r - 1, baseCol + 3).address(False, False) & "," & _
+                                                      .Cells(r - 1, baseCol + 3).address(False, False) & "-" & .Cells(r, baseCol + 7).address(False, False) & ")," & _
+                                                      "MIN(" & .Cells(r - 1, baseCol + 3).address(False, False) & "," & .Cells(r - 1, baseCol + 3).address(False, False) & "-" & _
+                                                      .Cells(r, baseCol + 8).address(False, False) & "))),0)"
         
-                    .Cells(r, baseCol + 6).formula = "=IF(" & .Cells(r, baseCol + 2).Address(False, False) & "=""" & "Y" & """,0,MAX(0,MIN(" & _
-                                                      .Cells(r, baseCol + 3).Address(False, False) & "," & .Cells(r, baseCol + 1).Address(False, False) & ")))"
+                    .Cells(r, baseCol + 6).formula = "=IF(" & .Cells(r, baseCol + 2).address(False, False) & "=""" & "Y" & """,0,MAX(0,MIN(" & _
+                                                      .Cells(r, baseCol + 3).address(False, False) & "," & .Cells(r, baseCol + 1).address(False, False) & ")))"
         
-                    .Cells(r, baseCol + 7).formula = "=IF(" & .Cells(r, baseCol + 2).Address(False, False) & "=""" & "Y" & """,0,-MAX(0," & _
-                                                      .Cells(r, baseCol + 1).Address(False, False) & "-" & .Cells(r, baseCol + 6).Address(False, False) & "))"
+                    .Cells(r, baseCol + 7).formula = "=IF(" & .Cells(r, baseCol + 2).address(False, False) & "=""" & "Y" & """,0,-MAX(0," & _
+                                                      .Cells(r, baseCol + 1).address(False, False) & "-" & .Cells(r, baseCol + 6).address(False, False) & "))"
         
-                    .Cells(r, baseCol + 8).formula = "=IFERROR(IF(" & .Cells(r, baseCol + 2).Address(False, False) & "=""" & "Y" & """,0,MAX(0," & _
-                                                      .Cells(r, baseCol + 9).Address(False, False) & "-" & .Cells(r, baseCol + 1).Address(False, False) & ")),0)"
+                    .Cells(r, baseCol + 8).formula = "=IFERROR(IF(" & .Cells(r, baseCol + 2).address(False, False) & "=""" & "Y" & """,0,MAX(0," & _
+                                                      .Cells(r, baseCol + 9).address(False, False) & "-" & .Cells(r, baseCol + 1).address(False, False) & ")),0)"
         
-                    .Cells(r, baseCol + 9).formula = "=IFERROR(IF(" & .Cells(r, baseCol + 2).Address(False, False) & "=""" & "Y" & """,0,MIN(0,MAX(" & _
-                                                      .Cells(r - 1, baseCol + 3).Address(False, False) & "+" & .Cells(r, baseCol + 1).Address(False, False) & "," & _
-                                                      .Cells(r, baseCol + 1).Address(False, False) & "))),0)"
+                    .Cells(r, baseCol + 9).formula = "=IFERROR(IF(" & .Cells(r, baseCol + 2).address(False, False) & "=""" & "Y" & """,0,MIN(0,MAX(" & _
+                                                      .Cells(r - 1, baseCol + 3).address(False, False) & "+" & .Cells(r, baseCol + 1).address(False, False) & "," & _
+                                                      .Cells(r, baseCol + 1).address(False, False) & "))),0)"
                 End If
             End With
         Next r
@@ -985,7 +987,7 @@ For i = 1 To maxPoints
 
             ' Text colour/font
             .Font.Name = sSrc.Points(i).DataLabel.Font.Name
-            .Font.SIZE = sSrc.Points(i).DataLabel.Font.SIZE
+            .Font.Size = sSrc.Points(i).DataLabel.Font.Size
             .Font.Bold = sSrc.Points(i).DataLabel.Font.Bold
             .Font.Italic = sSrc.Points(i).DataLabel.Font.Italic
             .Font.color = sSrc.Points(i).DataLabel.Font.color
@@ -1059,7 +1061,7 @@ Private Sub CopyFontStandard(ByVal srcFont As Object, ByVal tgtFont As Object)
 On Error Resume Next
 
 tgtFont.Name = srcFont.Name
-tgtFont.SIZE = srcFont.SIZE
+tgtFont.Size = srcFont.Size
 tgtFont.Bold = srcFont.Bold
 tgtFont.Italic = srcFont.Italic
 tgtFont.Fill.ForeColor.RGB = srcFont.Fill.ForeColor.RGB
@@ -1145,7 +1147,7 @@ tgt.Legend.position = src.Legend.position
 ' Force legacy legend font
 With tgt.Legend.Font
     .Name = src.Legend.Font.Name
-    .SIZE = src.Legend.Font.SIZE
+    .Size = src.Legend.Font.Size
     .Bold = src.Legend.Font.Bold
     .Italic = src.Legend.Font.Italic
     .color = src.Legend.Font.color
@@ -1156,7 +1158,7 @@ Dim i As Long
 For i = 1 To WorksheetFunction.Min(src.Legend.LegendEntries.count, tgt.Legend.LegendEntries.count)
     With tgt.Legend.LegendEntries(i).Font
         .Name = src.Legend.LegendEntries(i).Font.Name
-        .SIZE = src.Legend.LegendEntries(i).Font.SIZE
+        .Size = src.Legend.LegendEntries(i).Font.Size
         .Bold = src.Legend.LegendEntries(i).Font.Bold
         .Italic = src.Legend.LegendEntries(i).Font.Italic
         .color = src.Legend.LegendEntries(i).Font.color
@@ -1200,7 +1202,7 @@ On Error Resume Next
 ' Font
 With tgt.chartTitle.Font
     .Name = src.chartTitle.Font.Name
-    .SIZE = src.chartTitle.Font.SIZE
+    .Size = src.chartTitle.Font.Size
     .Bold = src.chartTitle.Font.Bold
     .Italic = src.chartTitle.Font.Italic
     .color = src.chartTitle.Font.color
@@ -1363,3 +1365,76 @@ Private Function ArrayFromValues(ByVal vals As Variant) As Variant
     End If
 
 End Function
+
+'========================
+' MOVE CHART OBJECTS WITH KEYBOARD SHORTCUTS
+'========================
+
+
+
+Sub MoveChartLeft()
+    MoveSelectedShape -MOVE_AMOUNT, 0
+End Sub
+
+Sub MoveChartRight()
+    MoveSelectedShape MOVE_AMOUNT, 0
+End Sub
+
+Sub MoveChartUp()
+    MoveSelectedShape 0, -MOVE_AMOUNT
+End Sub
+
+Sub MoveChartDown()
+    MoveSelectedShape 0, MOVE_AMOUNT
+End Sub
+
+Sub MoveChartLeftFast()
+    MoveSelectedShape -10, 0
+End Sub
+
+Sub MoveChartRightFast()
+    MoveSelectedShape 10, 0
+End Sub
+
+Sub MoveChartUpFast()
+    MoveSelectedShape 0, -10
+End Sub
+
+Sub MoveChartDownFast()
+    MoveSelectedShape 0, 10
+End Sub
+
+Private Sub MoveSelectedShape(ByVal XMove As Double, ByVal YMove As Double)
+
+    On Error Resume Next
+
+    Select Case TypeName(Selection)
+
+        Case "ChartArea"
+
+            With ActiveChart.Parent
+                .Left = .Left + XMove
+                .Top = .Top + YMove
+            End With
+
+        Case "ShapeRange"
+
+            Dim shp As Shape
+
+            For Each shp In Selection.ShapeRange
+                shp.Left = shp.Left + XMove
+                shp.Top = shp.Top + YMove
+            Next shp
+
+        Case "DataLabel"
+
+            With Selection
+                .Left = .Left + XMove
+                .Top = .Top + YMove
+            End With
+
+    End Select
+
+    On Error GoTo 0
+
+End Sub

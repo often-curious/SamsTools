@@ -77,7 +77,7 @@ Private Sub EnsureMenuOnBar(ByVal barName As String)
     Set popupCtrl = cb.FindControl( _
         Type:=msoControlPopup, _
         ID:=0, _
-        tag:=POPUP_TAG, _
+        Tag:=POPUP_TAG, _
         Visible:=True _
     )
 
@@ -87,7 +87,7 @@ Private Sub EnsureMenuOnBar(ByVal barName As String)
 
     With popupCtrl
         .caption = POPUP_CAPTION
-        .tag = POPUP_TAG
+        .Tag = POPUP_TAG
     End With
 
     AddFmtButton popupCtrl, "1,000", "#,##0;[Red](#,##0);-", True
@@ -121,7 +121,7 @@ Private Sub DeleteMenuOnBar(ByVal barName As String)
     Set ctrl = cb.FindControl( _
         Type:=msoControlPopup, _
         ID:=0, _
-        tag:=POPUP_TAG, _
+        Tag:=POPUP_TAG, _
         Visible:=True _
     )
 
@@ -137,30 +137,30 @@ Public Sub ApplyNumberFormat_FromMenu()
     On Error GoTo CleanUp
 
     Dim ac As CommandBarControl
-    Dim fmt As String
+    Dim Fmt As String
 
     Set ac = Application.CommandBars.ActionControl
     If ac Is Nothing Then GoTo CleanUp
 
-    fmt = ac.tag
-    If Len(fmt) = 0 Then GoTo CleanUp
+    Fmt = ac.Tag
+    If Len(Fmt) = 0 Then GoTo CleanUp
 
     Application.ScreenUpdating = False
 
     If TypeName(Selection) = "Range" Then
-        ApplyFormatToRange Selection, fmt
+        ApplyFormatToRange Selection, Fmt
         GoTo CleanUp
     End If
 
     If Not ActiveChart Is Nothing Then
-        ApplyFormatToChartSelection fmt
+        ApplyFormatToChartSelection Fmt
     End If
 
 CleanUp:
     Application.ScreenUpdating = oldUpd
 End Sub
 
-Private Sub ApplyFormatToRange(ByVal rng As Range, ByVal fmt As String)
+Private Sub ApplyFormatToRange(ByVal rng As Range, ByVal Fmt As String)
     Dim pc As PivotCell
 
     On Error Resume Next
@@ -170,36 +170,36 @@ Private Sub ApplyFormatToRange(ByVal rng As Range, ByVal fmt As String)
     If Not pc Is Nothing Then
         If pc.PivotCellType = xlPivotCellValue Or pc.PivotCellType = xlPivotCellSubtotal Then
             If Not pc.PivotField Is Nothing Then
-                pc.PivotField.numberFormat = fmt
+                pc.PivotField.numberFormat = Fmt
                 Exit Sub
             End If
         End If
     End If
 
-    rng.numberFormat = fmt
+    rng.numberFormat = Fmt
 End Sub
 
-Private Sub ApplyFormatToChartSelection(ByVal fmt As String)
+Private Sub ApplyFormatToChartSelection(ByVal Fmt As String)
     On Error Resume Next
 
     Select Case TypeName(Selection)
 
         Case "Axis"
-            Selection.TickLabels.numberFormat = fmt
+            Selection.TickLabels.numberFormat = Fmt
 
         Case "DataLabels", "DataLabel"
-            Selection.numberFormat = fmt
+            Selection.numberFormat = Fmt
 
         Case "Series"
             If Not Selection.HasDataLabels Then Selection.ApplyDataLabels
-            Selection.DataLabels.numberFormat = fmt
+            Selection.DataLabels.numberFormat = Fmt
 
         Case "ChartArea", "PlotArea"
-            ActiveChart.Axes(xlCategory).TickLabels.numberFormat = fmt
-            ActiveChart.Axes(xlValue).TickLabels.numberFormat = fmt
+            ActiveChart.Axes(xlCategory).TickLabels.numberFormat = Fmt
+            ActiveChart.Axes(xlValue).TickLabels.numberFormat = Fmt
 
         Case Else
-            Selection.numberFormat = fmt
+            Selection.numberFormat = Fmt
 
     End Select
 
@@ -219,7 +219,7 @@ Private Sub AddFmtButton( _
     With btn
         .caption = caption
         .Style = msoButtonCaption
-        .tag = numberFormat
+        .Tag = numberFormat
         .OnAction = "ApplyNumberFormat_FromMenu"
         If beginGroup Then .beginGroup = True
     End With
